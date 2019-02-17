@@ -1,0 +1,1 @@
+from translatesrt import TranslateSrt
