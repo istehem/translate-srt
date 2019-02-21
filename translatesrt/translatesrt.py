@@ -12,7 +12,7 @@ class TranslateSrt:
         pass
 
     def toLanguage(self):
-        return 'fr'
+        return 'en'
 
     def formatentry(self,entry):
         number, start_end, content = entry
@@ -23,7 +23,7 @@ class TranslateSrt:
         return filename + '-' + self.toLanguage() + extension
 
     def writesrt(self,entries, filename):
-        xs = [ formatentry(x) for x in entries ]
+        xs = [ self.formatentry(x) for x in entries ]
         outputname = self.outputfilename(filename)
         file = open(outputname, 'w')
         file.writelines(xs)
@@ -50,7 +50,7 @@ class TranslateSrt:
         translatedentries = []
         progress = ProgressBar()
         progress.update_progress(0)
-        translator = Translator('en', self.toLanguage())
+        translator = Translator('pt', self.toLanguage())
         for i, entry in enumerate(entries, start=1):
             progress.update_progress(i/size)
             number, start_end, content = entry
