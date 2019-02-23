@@ -15,7 +15,7 @@ setup(
 
     packages = find_packages(exclude=[]),
 
-    keywords = 'MPD REST JSON',
+    keywords = 'Translate, Subtitles',
 
     classifiers = ['Programming Language :: Python :: 3'],
 )

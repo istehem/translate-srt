@@ -1,1 +1,1 @@
-from translatesrt import TranslateSrt
+__all__ = ['translatesrt', 'translator']
