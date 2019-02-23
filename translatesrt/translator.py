@@ -1,9 +1,10 @@
 import requests
 import json
 import subprocess
+from language import Language
 
 class Translator:
-    def __init__(self, f ='nl', t = 'en'):
+    def __init__(self, f = Language.FR, t = Language.EN):
         self.opts = self.getDefaults()
         self.opts['from'] = f
         self.opts['to'] = t
@@ -39,8 +40,8 @@ class Translator:
     def getDefaults(self):
         return {
             'client' : 't',
-            'from' : 'nl',
-            'to' :  'en'
+            'from' : Language.FR,
+            'to' :   Language.EN
         }
 
     def getToken(self, text):

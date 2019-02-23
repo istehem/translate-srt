@@ -48,7 +48,7 @@ class TranslateSrt:
         translatedentries = []
         progress = ProgressBar()
         progress.update_progress(0)
-        translator = Translator(str(self.fromLang), str(self.toLang))
+        translator = Translator(self.fromLang, self.toLang)
         for i, entry in enumerate(entries, start=1):
             progress.update_progress(i/size)
             number, start_end, content = entry
