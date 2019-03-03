@@ -4,6 +4,9 @@ from translation import Translation
 import BTrees.OOBTree
 import transaction
 from translator import Translator
+from collections import namedtuple
+
+TranslationKey = namedtuple('TranslationKey', ['language', 'text'])
 
 class TranslationHandler(Translator):
     def __init__(self, f = Language.FR, t = Language.EN, refreshdb=False):
@@ -25,20 +28,26 @@ class TranslationHandler(Translator):
 
     def translate(self, text):
         translatedText = None
-        translations = None
-        if(text in self.root):
-            translations = self.root[text].translations
+        translationEntry = None
+        key = TranslationKey(language = self.fromLang, text = text)
+        if(key in self.root):
+            translationEntry = self.root[key]
+            translations = translationEntry.translations
             translation = translations[self.toLang]
             if not self.refreshdb and translation:
                 return translation
             translatedText = super().translate(text)
             translations[self.toLang] = translatedText
         else:
-            translations = Translation(text)
-            translatedText = super().translate(text)
-            translations.translations[self.toLang] = translatedText
-        self.root[text] = translations
+            translationEntry = self.createNewTranslationEntry(text)
+        assert translationEntry.translations[self.toLang], "translation missing"
+        self.root[key] = translationEntry
         transaction.commit()
         return translatedText
 
+    def createNewTranslationEntry(self, text):
+        translationEntry = Translation(text)
+        translatedText = super().translate(text)
+        translationEntry.translations[self.toLang] = translatedText
+        return translationEntry
 
