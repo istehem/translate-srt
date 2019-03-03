@@ -27,7 +27,6 @@ class TranslationHandler(Translator):
         self.db.close()
 
     def translate(self, text):
-        translatedText = None
         translationEntry = None
         key = TranslationKey(language = self.fromLang, text = text)
         if(key in self.root):
@@ -36,18 +35,16 @@ class TranslationHandler(Translator):
             translation = translations[self.toLang]
             if not self.refreshdb and translation:
                 return translation
-            translatedText = super().translate(text)
-            translations[self.toLang] = translatedText
+            translations[self.toLang] = super().translate(text)
         else:
             translationEntry = self.createNewTranslationEntry(text)
         assert translationEntry.translations[self.toLang], "translation missing"
         self.root[key] = translationEntry
         transaction.commit()
-        return translatedText
+        return translationEntry.translations[self.toLang]
 
     def createNewTranslationEntry(self, text):
         translationEntry = Translation(text)
-        translatedText = super().translate(text)
-        translationEntry.translations[self.toLang] = translatedText
+        translationEntry.translations[self.toLang] = super().translate(text)
         return translationEntry
 
