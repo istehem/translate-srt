@@ -6,6 +6,7 @@ from collections import namedtuple
 from translator import Translator
 from progressbar import ProgressBar
 from language import Language
+from translationhandler import TranslationHandler
 
 class TranslateSrt:
 
@@ -48,7 +49,7 @@ class TranslateSrt:
         translatedentries = []
         progress = ProgressBar()
         progress.update_progress(0)
-        translator = Translator(self.fromLang, self.toLang)
+        translator = TranslationHandler(self.fromLang, self.toLang, self.refreshdb)
         for i, entry in enumerate(entries, start=1):
             progress.update_progress(i/size)
             number, start_end, content = entry
@@ -60,11 +61,14 @@ class TranslateSrt:
         parser = argparse.ArgumentParser(description='Translate a srt file')
         parser.add_argument('filename', metavar='file', type=str,
                     help='sub-file to translate')
-        parser.add_argument('-from_lang', type=Language,
+        parser.add_argument('-f', '--from-lang', type=Language,
                 help='language to translate to (en, de, fr ...)', default=Language.FR)
-        parser.add_argument('-to_lang', type=Language,
+        parser.add_argument('-t', '--to-lang', type=Language,
                 help='language to translate to (en, de, fr ...)', default=Language.EN)
+        parser.add_argument('-r', '--refresh-db', action='store_true',
+                help='override existing database translations')
         args = parser.parse_args()
         self.toLang = args.to_lang
         self.fromLang = args.from_lang
+        self.refreshdb = args.refresh_db
         self.writesrt(self.process(args.filename), args.filename)

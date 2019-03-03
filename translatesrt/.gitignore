@@ -1,4 +1,7 @@
 __pycache__
 *.swp
 node_modules
-procecced
+processed
+translations.fs*
+run.py
+*.srt
