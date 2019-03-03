@@ -25,6 +25,7 @@ class TranslationHandler(Translator):
 
     def translate(self, text):
         translatedText = None
+        translations = None
         if(text in self.root):
             translations = self.root[text].translations
             translation = translations[self.toLang]
@@ -36,7 +37,7 @@ class TranslationHandler(Translator):
             translations = Translation(text)
             translatedText = super().translate(text)
             translations.translations[self.toLang] = translatedText
-            self.root[text] = translations
+        self.root[text] = translations
         transaction.commit()
         return translatedText
 
