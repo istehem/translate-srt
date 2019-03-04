@@ -44,7 +44,7 @@ class TranslationHandler(Translator):
         return translationEntry.translations[self.toLang]
 
     def createNewTranslationEntry(self, text):
-        translationEntry = Translation(text, self.fromLang)
+        translationEntry = Translation(self.fromLang, text)
         translationEntry.translations[self.toLang] = super().translate(text)
         return translationEntry
 
