@@ -3,10 +3,14 @@ import os
 import re
 from itertools import groupby
 from collections import namedtuple
+
 from translator import Translator
 from progressbar import ProgressBar
 from language import Language
 from translationhandler import TranslationHandler
+
+
+SubtitleEntry = namedtuple('SubtitleEntry', ['number', 'start_end', 'content'])
 
 class TranslateSrt:
 
@@ -14,8 +18,7 @@ class TranslateSrt:
         pass
 
     def formatentry(self,entry):
-        number, start_end, content = entry
-        return ''.join(list((number, start_end, content, '\n')))
+        return ''.join(list((entry.number, entry.start_end, entry.content, '\n')))
 
     def outputfilename(self,inputfilename):
         filename, extension = os.path.splitext(inputfilename)
@@ -24,12 +27,8 @@ class TranslateSrt:
     def writesrt(self,entries, filename):
         xs = [ self.formatentry(x) for x in entries ]
         outputname = self.outputfilename(filename)
-        file = open(outputname, 'w')
-        file.writelines(xs)
-
-    def validate(self, entries):
-        for x in entries:
-            assert len(x) == 3, "valid entry must have exactly 3 elemens:" + str(len(x)) + " : " + str(x)
+        with open(outputname, 'w') as f:
+            f.writelines(xs)
 
     def parsesrt(self, filename):
         with open(filename) as f:
@@ -38,9 +37,8 @@ class TranslateSrt:
 
         for entry in entries:
             number, start_end, *content = entry
-            parsed_entry = number, start_end, ''.join(content)
+            parsed_entry = SubtitleEntry(number, start_end, ''.join(content))
             parsedentries.append(parsed_entry)
-        self.validate(parsedentries)
         return parsedentries
 
     def process(self, filename):
@@ -52,8 +50,7 @@ class TranslateSrt:
         with TranslationHandler(self.fromLang, self.toLang, self.refreshdb) as translator:
             for i, entry in enumerate(entries, start=1):
                 progress.update_progress(i/size)
-                number, start_end, content = entry
-                translatedentry = number, start_end, translator.translate(content)
+                translatedentry = SubtitleEntry(entry.number, entry.start_end, translator.translate(entry.content))
                 translatedentries.append(translatedentry)
         return translatedentries
 

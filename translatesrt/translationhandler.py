@@ -1,10 +1,10 @@
 import ZODB, ZODB.FileStorage
+from collections import namedtuple
+
 from language import Language
 from translation import Translation
-import BTrees.OOBTree
 import transaction
 from translator import Translator
-from collections import namedtuple
 
 TranslationKey = namedtuple('TranslationKey', ['language', 'text'])
 
@@ -36,6 +36,7 @@ class TranslationHandler(Translator):
             if not self.refreshdb and translation:
                 return translation
             translations[self.toLang] = super().translate(text)
+            translationEntry.translations = translations
         else:
             translationEntry = self.createNewTranslationEntry(text)
         assert translationEntry.translations[self.toLang], "translation missing"
