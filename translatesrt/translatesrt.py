@@ -49,12 +49,12 @@ class TranslateSrt:
         translatedentries = []
         progress = ProgressBar()
         progress.update_progress(0)
-        translator = TranslationHandler(self.fromLang, self.toLang, self.refreshdb)
-        for i, entry in enumerate(entries, start=1):
-            progress.update_progress(i/size)
-            number, start_end, content = entry
-            translatedentry = number, start_end, translator.translate(content)
-            translatedentries.append(translatedentry)
+        with TranslationHandler(self.fromLang, self.toLang, self.refreshdb) as translator:
+            for i, entry in enumerate(entries, start=1):
+                progress.update_progress(i/size)
+                number, start_end, content = entry
+                translatedentry = number, start_end, translator.translate(content)
+                translatedentries.append(translatedentry)
         return translatedentries
 
     def run(self):
