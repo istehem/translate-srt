@@ -1,6 +1,7 @@
 import requests
 import json
 import subprocess
+from os import path
 from language import Language
 
 class Translator:
