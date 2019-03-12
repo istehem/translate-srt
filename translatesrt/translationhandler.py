@@ -27,6 +27,8 @@ class TranslationHandler(Translator):
         self.db.close()
 
     def translate(self, text):
+        if not text:
+            return text
         translationEntry = None
         key = TranslationKey(language = self.fromLang, text = text)
         if(key in self.root):
@@ -39,7 +41,7 @@ class TranslationHandler(Translator):
             translationEntry.translations = translations
         else:
             translationEntry = self.createNewTranslationEntry(text)
-        assert translationEntry.translations[self.toLang], "translation missing"
+        assert translationEntry.translations[self.toLang], 'translation missing for: \"{}\"'.format(text)
         self.root[key] = translationEntry
         transaction.commit()
         return translationEntry.translations[self.toLang]
