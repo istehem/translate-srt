@@ -45,7 +45,8 @@ class Translator:
         }
 
     def getToken(self, text):
-        t = subprocess.check_output(['node', 'get-api-token.js', text])
+        tokenscript = path.join(path.dirname(path.realpath(__file__)), 'get-api-token.js')
+        t = subprocess.check_output(['node', tokenscript, text])
         return json.loads(t)
 
 

@@ -1,5 +1,6 @@
 import ZODB, ZODB.FileStorage
 from collections import namedtuple
+from os import path
 
 from language import Language
 from translation import Translation
@@ -10,7 +11,8 @@ TranslationKey = namedtuple('TranslationKey', ['language', 'text'])
 
 class TranslationHandler(Translator):
     def __init__(self, f = Language.FR, t = Language.EN, refreshdb=False):
-        self.storage = ZODB.FileStorage.FileStorage('translations.fs')
+        databasefile = path.join(path.dirname(path.realpath(__file__)), 'translations.fs')
+        self.storage = ZODB.FileStorage.FileStorage(databasefile)
         self.db = ZODB.DB(self.storage)
         self.connection = self.db.open()
         self.root = self.connection.root()
