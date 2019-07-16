@@ -1,10 +1,10 @@
 import ZODB, ZODB.FileStorage
 from collections import namedtuple
 from os import path
+import transaction
 
 from language import Language
 from translation import Translation
-import transaction
 from translator import Translator
 
 TranslationKey = namedtuple('TranslationKey', ['language', 'text'])

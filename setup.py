@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages # Always prefer setuptools over distutils
+from setuptools import setup, find_packages
 
 setup(
     name = 'translatesrt',
@@ -13,11 +13,16 @@ setup(
 
     license = 'BSD3',
 
-    packages = find_packages(exclude=[]),
+    packages = find_packages(exclude = []),
 
     keywords = 'Translate, Subtitles',
 
     classifiers = ['Programming Language :: Python :: 3'],
 
     install_requires=['ZODB']
+
+    # scripts=['translatesrt.py']
+    # entry_points = {
+    #    'console_scripts' : ['translatesrt = translatesrt:ou']
+    # }
 )
