@@ -1,4 +1,4 @@
 *.swp
 build
 dist
-translatesrt.egg-info
+translate_srt.egg-info

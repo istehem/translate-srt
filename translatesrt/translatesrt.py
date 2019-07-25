@@ -1,12 +1,13 @@
 import os
 import re
+import argparse
 from itertools import groupby
 from collections import namedtuple
 
-from translator import Translator
-from progressbar import ProgressBar
-from language import Language
-from translationhandler import TranslationHandler
+from .translator import Translator
+from .progressbar import ProgressBar
+from .language import Language
+from .translationhandler import TranslationHandler
 
 
 SubtitleEntry = namedtuple('SubtitleEntry', ['number', 'start_end', 'content'])
@@ -58,3 +59,17 @@ class TranslateSrt:
     def run(self, filename):
         self.writesrt(self.process(filename), filename)
 
+
+def main():
+    parser = argparse.ArgumentParser(description='Translate a srt file')
+    parser.add_argument('filename', metavar='file', type=str,
+                    help='sub-file to translate')
+    parser.add_argument('-f', '--from-lang', type=Language,
+               help='language to translate to (en, de, fr ...)', default=Language.FR)
+    parser.add_argument('-t', '--to-lang', type=Language,
+                help='language to translate to (en, de, fr ...)', default=Language.EN)
+    parser.add_argument('-r', '--refresh-db', action='store_true',
+                help='override existing database translations')
+    args = parser.parse_args()
+    translatsrt = TranslateSrt(args.from_lang, args.to_lang, args.refresh_db)
+    translatsrt.run(args.filename)

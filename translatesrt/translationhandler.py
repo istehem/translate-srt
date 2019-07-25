@@ -3,9 +3,9 @@ from collections import namedtuple
 from os import path
 import transaction
 
-from language import Language
-from translation import Translation
-from translator import Translator
+from .language import Language
+from .translation import Translation
+from .translator import Translator
 
 TranslationKey = namedtuple('TranslationKey', ['language', 'text'])
 

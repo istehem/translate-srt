@@ -1,5 +1,7 @@
-from pkgutil import extend_path
+from translatesrt import translatesrt
 
-import translatesrt
+from pathlib import Path
+import sys
 
-__all__ = ['TranslateSrt']
+def main():
+    translatesrt.main()

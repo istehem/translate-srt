@@ -1,11 +1,16 @@
-from setuptools import setup, find_packages
+import setuptools
 
-setup(
-    name = 'translatesrt',
+with open("README.md", "r") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
+    name = 'translate-srt',
 
     version = '0.0.1',
 
     description='Translate sub-title files',
+
+    long_description=long_description,
 
     author = 'Oskar Ingemarsson',
 
@@ -13,16 +18,16 @@ setup(
 
     license = 'BSD3',
 
-    packages = find_packages(exclude = []),
+    packages = setuptools.find_packages(),
 
     keywords = 'Translate, Subtitles',
 
     classifiers = ['Programming Language :: Python :: 3'],
 
-    install_requires=['ZODB']
+    install_requires=['ZODB', 'requests'],
 
-    # scripts=['translatesrt.py']
-    # entry_points = {
-    #    'console_scripts' : ['translatesrt = translatesrt:ou']
-    # }
+    entry_points = {
+        'console_scripts' : ['translate-srt = translatesrt:main']
+    }
+
 )
