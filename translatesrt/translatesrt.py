@@ -61,13 +61,15 @@ class TranslateSrt:
 
 
 def main():
+    defaultFromLang=Language.FR
+    defaultToLang=Language.EN
     parser = argparse.ArgumentParser(description='Translate a srt file')
     parser.add_argument('filename', metavar='file', type=str,
                     help='sub-file to translate')
     parser.add_argument('-f', '--from-lang', type=Language,
-               help='language to translate to (en, de, fr ...)', default=Language.FR)
+               help='language to translate from (en, de, ...), default ({})'.format(defaultFromLang), default=defaultFromLang)
     parser.add_argument('-t', '--to-lang', type=Language,
-                help='language to translate to (en, de, fr ...)', default=Language.EN)
+                help='language to translate to (de, fr ...), default ({})'.format(defaultToLang), default=defaultToLang)
     parser.add_argument('-r', '--refresh-db', action='store_true',
                 help='override existing database translations')
     args = parser.parse_args()
