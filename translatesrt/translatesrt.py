@@ -1,8 +1,6 @@
 import os
 import re
 import argparse
-from itertools import groupby
-from collections import namedtuple
 
 from .translator import Translator
 from .progressbar import ProgressBar
@@ -10,6 +8,7 @@ from .language import Language
 from .translationhandler import TranslationHandler
 
 from common.subtitle_entry import SubtitleEntry
+from common.srtfilehandler import SrtFileHandler
 
 class TranslateSrt:
 
@@ -25,25 +24,9 @@ class TranslateSrt:
         filename, extension = os.path.splitext(inputfilename)
         return filename + '-' + str(self.toLang) + extension
 
-    def writesrt(self,entries, filename):
-        xs = [ self.formatentry(x) for x in entries ]
-        outputname = self.outputfilename(filename)
-        with open(outputname, 'w') as f:
-            f.writelines(xs)
-
-    def parsesrt(self, filename):
-        with open(filename) as f:
-             entries = [list(g) for b,g in groupby(f, lambda x: bool(x.strip())) if b]
-        parsedentries = []
-
-        for entry in entries:
-            number, start_end, *content = entry
-            parsed_entry = SubtitleEntry(number, start_end, ''.join(content))
-            parsedentries.append(parsed_entry)
-        return parsedentries
 
     def process(self, filename):
-        entries = self.parsesrt(filename)
+        entries = SrtFileHandler.parsesrt(filename)
         size = len(entries)
         translatedentries = []
         progress = ProgressBar()
@@ -56,7 +39,7 @@ class TranslateSrt:
         return translatedentries
 
     def run(self, filename):
-        self.writesrt(self.process(filename), filename)
+        SrtFileHandler.writesrt(self.process(filename), self.outputfilename(filename))
 
 
 def main():
