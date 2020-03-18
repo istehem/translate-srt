@@ -1,4 +1,7 @@
 *.swp
+db
+div
 build
 dist
 translate_srt.egg-info
+__pycache__

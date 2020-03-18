@@ -9,8 +9,7 @@ from .progressbar import ProgressBar
 from .language import Language
 from .translationhandler import TranslationHandler
 
-
-SubtitleEntry = namedtuple('SubtitleEntry', ['number', 'start_end', 'content'])
+from common.subtitle_entry import SubtitleEntry
 
 class TranslateSrt:
 
