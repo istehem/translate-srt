@@ -27,7 +27,7 @@ setuptools.setup(
     install_requires=['ZODB', 'requests'],
 
     entry_points = {
-        'console_scripts' : ['translate-srt = translatesrt:main']
+        'console_scripts' : ['translate-srt = translatesrt:main', 'delay-srt = delaysrt:main']
     }
 
 )
