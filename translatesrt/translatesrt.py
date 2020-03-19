@@ -17,9 +17,6 @@ class TranslateSrt:
         self.toLang = toLang
         self.refreshdb = refreshdb
 
-    def formatentry(self,entry):
-        return ''.join(list((entry.number, entry.start_end, entry.content, '\n')))
-
     def outputfilename(self,inputfilename):
         filename, extension = os.path.splitext(inputfilename)
         return filename + '-' + str(self.toLang) + extension
