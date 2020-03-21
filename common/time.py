@@ -9,6 +9,26 @@ class Time:
         self.milliseconds = int(milliseconds)
 
     def add(self, time : Time) -> Time:
+        mssum = self.milliseconds + time.milliseconds
+        self.milliseconds = mssum % 1000
+        msrest = 0
+        if mssum >= 1000:
+            msrest = 1
+
+        ssum = self.seconds + time.seconds + msrest
+        self.seconds = ssum % 60
+        srest = 0
+        if ssum >= 60:
+           srest = 1
+
+        msum = self.minutes + time.minutes + srest
+        self.minutes = msum % 60
+        mrest = 0
+        if msum >= 60:
+           mrest = 1
+
+        self.hours = self.hours + time.hours + mrest
+
         return self
 
     def __str__(self):
