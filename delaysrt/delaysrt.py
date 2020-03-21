@@ -2,18 +2,19 @@ import argparse
 
 from common.subtitle_entry import SubtitleEntry
 from common.srtfilehandler import SrtFileHandler
+from common.time import Time
 
 class DelaySrt:
     def __init__(self, milliseconds=0, seconds=0, minutes=0, overwrite=False):
-       self.milliseconds = milliseconds
-       self.seconds = seconds
-       self.minutes = minutes
-       self.overwrite = overwrite
+        self.diff = Time(0, minutes, seconds, milliseconds)
+        self.overwrite = overwrite
 
     def process(self, filename):
-        entries = SrtFileHandler.parsesrt(filename)
-        for entry in entries:
-            print (entry.start_end)
+        entries = []
+        for entry in SrtFileHandler.parsesrt(filename):
+            entry.start_end.add(self.diff)
+            entries.append(entry)
+            print (entry)
 
     def run(self, filename):
         self.process(filename)
