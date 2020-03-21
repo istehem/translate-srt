@@ -1,4 +1,5 @@
 import argparse
+import os
 
 from common.subtitle_entry import SubtitleEntry
 from common.srtfilehandler import SrtFileHandler
@@ -14,10 +15,17 @@ class DelaySrt:
         for entry in SrtFileHandler.parsesrt(filename):
             entry.start_end.add(self.diff)
             entries.append(entry)
-            print (entry)
+        return entries
+
+    def outputfilename(self,inputfilename):
+        if not self.overwrite:
+            filename, extension = os.path.splitext(inputfilename)
+            return filename + '-' + 'offset' + extension
+        else:
+            return inputfilename
 
     def run(self, filename):
-        self.process(filename)
+        SrtFileHandler.writesrt(self.process(filename), self.outputfilename(filename))
 
 def main():
     parser = argparse.ArgumentParser(description='Add delay to a srt file')
@@ -29,7 +37,7 @@ def main():
                help='may be negative')
     parser.add_argument('-ms', '--milliseconds', type=int, default=0,
                help='may be negative')
-    parser.add_argument('-o', '--overwrite', action='store_false',
+    parser.add_argument('-o', '--overwrite', action='store_true',
                 help='overwrite existing file')
     args = parser.parse_args()
     delaysrt = DelaySrt(args.milliseconds, args.seconds, args.minutes, args.overwrite)

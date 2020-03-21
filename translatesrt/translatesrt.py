@@ -21,7 +21,6 @@ class TranslateSrt:
         filename, extension = os.path.splitext(inputfilename)
         return filename + '-' + str(self.toLang) + extension
 
-
     def process(self, filename):
         entries = SrtFileHandler.parsesrt(filename)
         size = len(entries)
