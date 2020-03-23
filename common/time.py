@@ -11,9 +11,8 @@ class Time:
         m, mr = self.calc(int(minutes) + sr, 60)
         self.minutes = m
         self.hours = int(hours) + mr
-        assert abs(self.minutes) < 60, f'minutes: maximum value 60, actual {self.minutes}'
-        assert abs(self.seconds) < 60, f'seconds: maximum value 60, actual {self.seconds}'
-        assert abs(self.milliseconds) < 1000, f'milliseconds: maximum value 1000, actual {self.milliseconds}'
+
+        self.assertvalid()
 
     def add(self, time : Time) -> Time:
         mssum = self.milliseconds + time.milliseconds
@@ -36,6 +35,8 @@ class Time:
 
         self.hours = self.hours + time.hours + mrest
 
+        self.assertvalid()
+
         return self
 
     def calc(self, value : int, maxval : int) -> Tuple[int, int]:
@@ -49,5 +50,11 @@ class Time:
     def fromstr(cls, timestr : str) -> Time:
         hour, minute, second, millisecond = re.split(':|,', timestr)
         return cls(hour, minute, second, millisecond)
+
+    def assertvalid(self) -> None:
+        assert abs(self.minutes) < 60, f'minutes: maximum value 60, actual {self.minutes}'
+        assert abs(self.seconds) < 60, f'seconds: maximum value 60, actual {self.seconds}'
+        assert abs(self.milliseconds) < 1000, f'milliseconds: maximum value 1000, actual {self.milliseconds}'
+
 
 
