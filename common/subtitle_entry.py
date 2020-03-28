@@ -1,3 +1,7 @@
-from collections import namedtuple
+from __future__ import annotations
+from typing import NamedTuple
 
-SubtitleEntry = namedtuple('SubtitleEntry', ['number', 'start_end', 'content'])
+from common.startend import StartEnd
+
+SubtitleEntry = NamedTuple('SubtitleEntry',
+        [('number', int), ('start_end', StartEnd), ('content', str)])

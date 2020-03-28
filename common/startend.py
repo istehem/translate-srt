@@ -7,18 +7,18 @@ class StartEnd:
         self.end   = end
 
     def __str__(self):
-        return f'{str(self.start)} {self.timeSeparator()} {str(self.end)}\n'
+        return f'{str(self.start)} {self.time_separator()} {str(self.end)}\n'
 
     def __repr__(self):
         return str(self)
 
     @classmethod
     def fromstr(cls, startendstr : str) -> StartEnd:
-        s, e = startendstr.split(cls.timeSeparator(), 1)
+        s, e = startendstr.split(cls.time_separator(), 1)
         return cls(Time.fromstr(s.strip()), Time.fromstr(e.strip()))
 
     @staticmethod
-    def timeSeparator() -> str:
+    def time_separator() -> str:
         return '-->'
 
     def add(self, diff : Time) -> None:
