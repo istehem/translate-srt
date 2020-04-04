@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Srt Web Tools</title>
+<!--
+
+Timeless Template
+
+http://www.templatemo.com/tm-517-timeless
+
+-->
+    <!-- load CSS -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400">
+    <!-- Google web font "Open Sans" -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <!-- https://getbootstrap.com/ -->
+    <link rel="stylesheet" href="/static/css/templatemo-style.css">
+    <!-- Templatemo style -->
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <header class="text-center tm-site-header">
+                    <h1 class="tm-site-title">Srt Web Tools</h1>
+                </header>
+            </div>
+        </div>
+        <div class="container tm-container-2">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2 class="text-center rtm-welcome-text">Upload file to translate</h2>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-lg-12 d-flex justify-content-center">
+                    <form enctype=multipart/form-data action="upload" method="post" class="tm-contact-form">
+                                    <div class="form-group">
+                                        <textarea id="srt-content" name="contact_message" class="form-control"
+                                                rows="6" placeholder="Content of srt-file to translate..." required readonly>
+                                        </textarea>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="form-group col-xl-6">
+                                                <label class="btn tm-btn-upload">
+                                                    <input type="file" name = "file" onchange='this.form.submit()'>
+                                                    Upload
+                                                </label>
+                                        </div>
+                                        <div class="form-group col-xl-6">
+                                            <button type="submit" class="btn  tm-btn-translate">Translate</button>
+                                        </div>
+                                    </div>
+                            </form>
+                </div>
+             </div>
+        </div>
+
+        <footer class="row mt-5 mb-5">
+            <div class="col-lg-12">
+            </div>
+        </footer>
+    </div>
+    <!-- .container -->
+
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/controller.js"></script>
+    <!-- <script src="js/jquery-3.2.1.slim.min.js"></script> -->
+    <script src="static/js/templatemo-script.js"></script>
+
+</body>
+</html>

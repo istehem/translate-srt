@@ -24,10 +24,10 @@ setuptools.setup(
 
     classifiers = ['Programming Language :: Python :: 3'],
 
-    install_requires=['ZODB', 'requests'],
+    install_requires=['ZODB', 'requests', 'flask', 'Flask-RESTful'],
 
     entry_points = {
-        'console_scripts' : ['translate-srt = translatesrt:main', 'delay-srt = delaysrt:main']
+        'console_scripts' : ['translate-srt = translatesrt:main', 'delay-srt = delaysrt:main', 'srt-web-tools = srtwebtools:main']
     }
 
 )
