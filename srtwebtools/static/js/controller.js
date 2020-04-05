@@ -1,3 +1,8 @@
+$.urlParam = function(name){
+	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+	return results[1] || 0;
+}
+
 function fillTextArea(filename){
     request = $.ajax({
         url: "uploads/" + filename,
@@ -6,13 +11,22 @@ function fillTextArea(filename){
             $("#srt-content").html(data);
         }
     });
-
 }
 
-$.urlParam = function(name){
-	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-	return results[1] || 0;
+
+function translate(){
+     filename = $.urlParam('filename');
+     if(filename){
+         request = $.ajax({
+             url: "translate/" + filename,
+             type: "POST",
+             success: function(data){
+                $("#srt-content").html(data);
+            }
+        });
+     }
 }
+
 
 $( document ).ready(function() {
      filename = $.urlParam('filename');
@@ -20,6 +34,5 @@ $( document ).ready(function() {
         fillTextArea(filename)
     }
 });
-
 
 

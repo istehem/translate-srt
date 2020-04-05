@@ -4,6 +4,8 @@ from os import path
 from werkzeug.utils import secure_filename
 
 from common.utils import projectroot
+from translatesrt.translatesrt import TranslateSrt
+from translatesrt.translatesrt import Language
 
 
 class SrtWebTools:
@@ -22,8 +24,7 @@ class SrtWebTools:
 
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
-        return send_from_directory(SrtWebTools.app.config['UPLOAD_FOLDER'],
-                               filename)
+        return send_from_directory(SrtWebTools.app.config['UPLOAD_FOLDER'],filename)
 
     @app.route('/upload', methods = ['POST'])
     def upload():
@@ -38,9 +39,17 @@ class SrtWebTools:
             file.save(path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], filename))
         return redirect('/?filename=' + filename)
 
+    @app.route('/translate/<filename>', methods={'POST'})
+    def translate(filename):
+        sf = secure_filename(filename)
+        translator = TranslateSrt(Language.FR, Language.EN)
+        translator.run(path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], sf))
+        return send_from_directory(SrtWebTools.app.config['UPLOAD_FOLDER'], translator.outputfilename(filename))
+
     @app.route('/')
     def home():
         return render_template('index.html')
+
 
     @staticmethod
     def allowed_file(filename):
