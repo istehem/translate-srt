@@ -21,7 +21,7 @@ function translate(){
              url: "translate/" + filename,
              type: "POST",
              success: function(data){
-                $("#srt-content").html(data);
+                $("#srt-modified-content").html(data);
             }
         });
      }

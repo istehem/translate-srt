@@ -37,7 +37,7 @@ class SrtWebTools:
         if file and SrtWebTools.allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], filename))
-        return redirect('/?filename=' + filename)
+        return redirect('/?filename=' + file.filename)
 
     @app.route('/translate/<filename>', methods={'POST'})
     def translate(filename):
