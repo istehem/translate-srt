@@ -22,6 +22,7 @@ function translate(){
              type: "POST",
              success: function(data){
                 $("#srt-modified-content").html(data);
+                $("#downloadbutton").prop('disabled', false);
             }
         });
      }
