@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory, request, flash, redirect, url_for
+from flask import Flask, render_template, send_from_directory, request, flash, redirect, url_for, abort, send_file
 import pathlib
 from os import path
 from werkzeug.utils import secure_filename
@@ -44,7 +44,17 @@ class SrtWebTools:
         sf = secure_filename(filename)
         translator = TranslateSrt(Language.FR, Language.EN)
         translator.run(path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], sf))
-        return send_from_directory(SrtWebTools.app.config['UPLOAD_FOLDER'], translator.outputfilename(filename))
+        return send_from_directory(SrtWebTools.app.config['UPLOAD_FOLDER'], translator.outputfilename(sf))
+
+    @app.route('/downloadtranslation/<filename>')
+    def downloadlocation(filename):
+        translator = TranslateSrt(Language.FR, Language.EN);
+        outputfilename = secure_filename(translator.outputfilename(secure_filename(filename)))
+        translatedfilepath = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], outputfilename)
+        if path.isfile(translatedfilepath):
+            return send_file(translatedfilepath, as_attachment=True)  # SrtWebTools.UPLOAD_PATH + '/' + outputfilename
+        else:
+            abort(404)
 
     @app.route('/')
     def home():

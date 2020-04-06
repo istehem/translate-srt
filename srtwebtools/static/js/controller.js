@@ -27,6 +27,13 @@ function translate(){
      }
 }
 
+function download(){
+     filename = $.urlParam('filename');
+     if(filename){
+        window.open("downloadtranslation/" + filename, '_blank');
+     }
+}
+
 
 $( document ).ready(function() {
      filename = $.urlParam('filename');
