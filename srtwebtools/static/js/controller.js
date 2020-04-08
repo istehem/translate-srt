@@ -22,6 +22,9 @@ function translate(){
              type: "POST",
              success: function(data){
                 $("#srt-modified-content").html(data);
+                let progress = $(".progress-bar");
+                progress.css("width", "100%");
+                progress.html("100%");
                 $("#downloadbutton").prop('disabled', false);
             }
         });

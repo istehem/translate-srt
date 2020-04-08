@@ -19,8 +19,9 @@ class SrtWebTools:
         SrtWebTools.app.secret_key = 'super secret key'
         SrtWebTools.app.config['SESSION_TYPE'] = 'filesystem'
         SrtWebTools.app.config['UPLOAD_FOLDER'] = uploaddir
-        SrtWebTools.app.run()
 
+    def run(self):
+        SrtWebTools.app.run()
 
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
@@ -67,4 +68,4 @@ class SrtWebTools:
            filename.rsplit('.', 1)[1].lower() in SrtWebTools.ALLOWED_EXTENSIONS
 
 def main():
-    SrtWebTools()
+    SrtWebTools().run()
