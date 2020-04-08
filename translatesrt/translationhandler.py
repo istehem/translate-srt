@@ -36,7 +36,7 @@ class TranslationHandler(Translator):
         if(key in self.root):
             translationEntry = self.root[key]
             translations = translationEntry.translations
-            translation = translations[self.toLang]
+            translation = translations.get(self.toLang)
             if not self.refreshdb and translation:
                 return translation
             translations[self.toLang] = super().translate(text)
