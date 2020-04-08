@@ -1,5 +1,8 @@
 import sys
 
+from common.event import Event
+from common.eventtype import EventType
+
 class ProgressBar:
     def __init__(self, barLength=10):
         self.barLength = barLength
@@ -7,7 +10,11 @@ class ProgressBar:
     ## Accepts a float between 0 and 1. Any int will be converted to a float.
     ## A value under 0 represents a 'halt'.
     ## A value at 1 or bigger represents 100%
-    def update_progress(self, progress):
+    def update_progress(self, event : Event) -> None:
+        if event.type != EventType.PROGRESS:
+            return
+
+        progress = event.percent
         status = ""
         if isinstance(progress, int):
              progress = float(progress)

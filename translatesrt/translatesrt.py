@@ -7,15 +7,19 @@ from .progressbar import ProgressBar
 from .language import Language
 from .translationhandler import TranslationHandler
 
+from common.observable import Observable
+from common.eventtype import EventType
 from common.subtitle_entry import SubtitleEntry
 from common.srtfilehandler import SrtFileHandler
 
-class TranslateSrt:
+
+class TranslateSrt(Observable):
 
     def __init__(self, fromLang, toLang, refreshdb = False):
         self.fromLang = fromLang
         self.toLang = toLang
         self.refreshdb = refreshdb
+        Observable.__init__(self)
 
     def outputfilename(self,inputfilename):
         filename, extension = os.path.splitext(inputfilename)
@@ -25,14 +29,17 @@ class TranslateSrt:
         entries = SrtFileHandler.parsesrt(filename)
         size = len(entries)
         translatedentries = []
-        progress = ProgressBar()
-        progress.update_progress(0)
+        self.fire(type=EventType.PROGRESS, percent=0)
         with TranslationHandler(self.fromLang, self.toLang, self.refreshdb) as translator:
             for i, entry in enumerate(entries, start=1):
-                progress.update_progress(i/size)
                 translatedentry = SubtitleEntry(entry.number, entry.start_end, translator.translate(entry.content))
                 translatedentries.append(translatedentry)
+                self.fire(type=EventType.PROGRESS, percent=i/size)
         return translatedentries
+
+    def register_stdout_progress_observer(self):
+        progress = ProgressBar()
+        self.subscribe(lambda e: progress.update_progress(e))
 
     def run(self, filename):
         SrtFileHandler.writesrt(self.process(filename), self.outputfilename(filename))
@@ -51,5 +58,6 @@ def main():
     parser.add_argument('-r', '--refresh-db', action='store_true',
                 help='override existing database translations')
     args = parser.parse_args()
-    translatsrt = TranslateSrt(args.from_lang, args.to_lang, args.refresh_db)
-    translatsrt.run(args.filename)
+    translatesrt = TranslateSrt(args.from_lang, args.to_lang, args.refresh_db)
+    translatesrt.register_stdout_progress_observer()
+    translatesrt.run(args.filename)
