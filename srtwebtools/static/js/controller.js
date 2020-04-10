@@ -21,21 +21,22 @@ function translate(){
              url: "translate/" + filename,
              type: "POST",
              success: function(data){
-                $("#srt-modified-content").html(data);
+                $("#srt-modified-content").html(data.content);
                 let progress = $(".progress-bar");
                 progress.css("width", "100%");
                 progress.html("100%");
                 $("#downloadbutton").prop('disabled', false);
+                $('#downloadfilename').val(data.filename);
             }
         });
      }
 }
 
 function download(){
-     filename = $.urlParam('filename');
-     if(filename){
+    let filename = $("#downloadfilename").val();
+    if(filename){
         window.open("downloadtranslation/" + filename, '_blank');
-     }
+    }
 }
 
 

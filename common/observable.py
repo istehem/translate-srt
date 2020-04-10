@@ -1,6 +1,6 @@
 from common.event import Event
 
-class Observable(object):
+class Observable():
     def __init__(self):
         self.callbacks = []
     def subscribe(self, callback):
