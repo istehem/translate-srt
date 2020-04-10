@@ -6,20 +6,17 @@ from werkzeug.utils import secure_filename
 from functools import wraps
 
 from common.utils import projectroot
+from common.eventtype import EventType
 from translatesrt.translatesrt import TranslateSrt
 from translatesrt.translatesrt import Language
 
-def returns_json(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        r = f(*args, **kwargs)
-        return Response(r, content_type='application/json; charset=utf-8')
-    return decorated_function
+from zc.lockfile import LockError
 
 class SrtWebTools:
 
     app = Flask(__name__)
     ALLOWED_EXTENSIONS = {'srt'}
+    current_translation_status = { 'status' : 'idle', 'progress' : 0.0 }
 
     def __init__(self):
         uploaddir = path.join(projectroot(), 'upload')
@@ -49,12 +46,17 @@ class SrtWebTools:
         return redirect('/?filename=' + file.filename)
 
     @app.route('/translate/<filename>', methods={'POST'})
-    #@returns_json
     def translate(filename):
         sf = secure_filename(filename)
         translator = TranslateSrt(Language.FR, Language.EN)
         full_filename = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], sf)
-        translator.run(full_filename)
+        translator.subscribe(lambda e: SrtWebTools.handleprogressevent(e))
+        try:
+            translator.run(full_filename)
+        except LockError as e:
+            response = jsonify(SrtWebTools.current_translation_status)
+            response.status_code = 400
+            return response
 
         file_content = ''
         with open(translator.outputfilename(full_filename)) as f:
@@ -64,6 +66,14 @@ class SrtWebTools:
                 'filename' : secure_filename(translator.outputfilename(secure_filename(filename))),
                 'content'  : file_content
             })
+
+    @staticmethod
+    def handleprogressevent(e):
+        # Don't overwrite value by potential second progress
+        if(e.type != EventType.PROGRESS or e.percent == 0):
+            return
+        SrtWebTools.current_translation_status['status'] = 'busy'
+        SrtWebTools.current_translation_status['progress'] = e.percent
 
     @app.route('/downloadtranslation/<filename>')
     def downloadlocation(filename):
@@ -75,6 +85,10 @@ class SrtWebTools:
         else:
             abort(404)
 
+    @app.route('/translation_status')
+    def translation_status():
+        return jsonify(SrtWebTools.current_translation_status)
+
     @app.route('/')
     def home():
         return render_template('index.html')
@@ -84,6 +98,7 @@ class SrtWebTools:
     def allowed_file(filename):
         return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in SrtWebTools.ALLOWED_EXTENSIONS
+
 
 
 def main():
