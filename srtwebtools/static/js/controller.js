@@ -44,7 +44,7 @@ function requestAndSetProgress(){
 
 function translate(){
      filename = $.urlParam('filename');
-     var refreshIntervalId = setInterval(function(){requestAndSetProgress()}, 300);
+     var refreshIntervalId = setInterval(function(){requestAndSetProgress()}, 500);
 
      if(filename){
          request = $.ajax({
@@ -57,14 +57,19 @@ function translate(){
                 $('#downloadfilename').val(data.filename);
              },
 			 error: function(xhr, status, error) {
-                let percent = percentfloatToString(JSON.parse(xhr.responseText).progress);
-                $("#errormessage").html('<strong>Error:</strong> Translator is busy at: ' + percent);
-	            $(".alert").alert();
-	            $(".alert").fadeIn('slow');
+                try {
+                    let percent = percentfloatToString(JSON.parse(xhr.responseText).progress);
+                    $("#errormessage").html('<strong>Error:</strong> Translator is busy at: ' + percent);
+	                $(".alert").alert();
+	                $(".alert").fadeIn('slow');
+                }
+                catch(e) {
+                    console.error(error);
+                }
+
 			 },
              complete: function(){
                 clearInterval(refreshIntervalId);
-                setProgress(1);
              }
         });
      }

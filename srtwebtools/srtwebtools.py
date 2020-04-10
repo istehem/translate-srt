@@ -2,8 +2,8 @@ from flask import Flask, render_template, send_from_directory, request, flash, r
 import pathlib
 from os import path
 from werkzeug.utils import secure_filename
-
 from functools import wraps
+import argparse
 
 from common.utils import projectroot
 from common.eventtype import EventType
@@ -25,8 +25,8 @@ class SrtWebTools:
         SrtWebTools.app.config['SESSION_TYPE'] = 'filesystem'
         SrtWebTools.app.config['UPLOAD_FOLDER'] = uploaddir
 
-    def run(self):
-        SrtWebTools.app.run()
+    def run(self, host):
+        SrtWebTools.app.run(host=host)
 
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
@@ -102,4 +102,8 @@ class SrtWebTools:
 
 
 def main():
-    SrtWebTools().run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--host', nargs='?', help='listen to address',
+            type=str, default='127.0.0.1')
+    args = parser.parse_args()
+    SrtWebTools().run(args.host)
