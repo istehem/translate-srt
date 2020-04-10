@@ -49,7 +49,7 @@ class TranslationHandler(Translator):
             translationEntry.translations = translations
         else:
             translationEntry = self.createNewTranslationEntry(text)
-        assert translationEntry.translations[self.toLang], 'translation missing for: \"{}\"'.format(text)
+        assert translationEntry.translations.get(self.toLang), 'translation missing for: \"{}\"'.format(text)
         self.root[key] = translationEntry
         transaction.commit()
         return translationEntry.translations[self.toLang]
