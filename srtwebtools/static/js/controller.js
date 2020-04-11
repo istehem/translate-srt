@@ -20,14 +20,17 @@ function fillTextArea(filename){
         url: "uploads/" + filename,
         type: "GET",
         success: function(data){
-            $("#srt-content").html(data);
+            $("#srt-content").html(encode(data));
             $(".tm-btn-translate").prop('disabled', false);
         },
         error: function(xhr, status, error) {
             try {
                 data = JSON.parse(xhr.responseText);
                 if (data.error === 'FileNotFoundError'){
-                        alertErrorMessage("File " + data.value.filename + " not found or not valid, please specify another file.");
+                    alertErrorMessage("File " + data.value.filename + " not found or not valid, please specify another file.");
+                }
+                if (data.error === 'UnicodeDecodeError'){
+                    alertErrorMessage("File name invalid, please specify another file.");
                 }
             }
             catch {
@@ -58,11 +61,27 @@ function requestAndSetProgress(){
     });
 }
 
-function alertErrorMessage(message){
-    $("#errormessage").html('<strong>Error:</strong> ' + message);
+function encode(text){
+    return $('<div>').text(text).html();
+}
+
+function alertError(){
     $(".alert").alert();
     $(".alert").fadeIn('slow');
 }
+
+function alertErrorMessage(message){
+    $("#errormessage").html('<strong>Error:</strong> ' + encode(message));
+    $("#errormessage").html(html);
+    alertError();
+}
+
+function alertErrorMessage(message, id, linktext){
+    let html = encode(message) + '<a id="' + id  + '" href="#">' + encode(linktext) + "</a>";
+    $("#errormessage").html(html);
+    alertError();
+}
+
 
 function translate(){
      filename = $.urlParam('filename');
@@ -73,7 +92,7 @@ function translate(){
              url: "translate/" + filename,
              type: "POST",
              success: function(data){
-                $("#srt-modified-content").html(data.content);
+                $("#srt-modified-content").html(encode(data.content));
                 setProgress(1);
                 $("#downloadbutton").prop('disabled', false);
                 $('#downloadfilename').val(data.filename);
@@ -87,7 +106,7 @@ function translate(){
                     }
                     else if (data.error === 'ConnectionError'){
                         let tryAgain = "tryagain";
-                        alertErrorMessage('A connection error occured, <a id="' + tryAgain + '" href="#"> please try again.</a>');
+                        alertErrorMessage("A connection error occured, ", tryAgain, "please try again");
                         $('#' + tryAgain).click(function() {
                             $(this).closest(".alert").hide();
                             translate();

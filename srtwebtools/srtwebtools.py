@@ -4,6 +4,8 @@ from os import path
 from werkzeug.utils import secure_filename
 from functools import wraps
 import argparse
+import base64
+import binascii
 
 from common.utils import projectroot
 from common.eventtype import EventType
@@ -31,11 +33,20 @@ class SrtWebTools:
 
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
-        full_filename = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], secure_filename(filename))
+        try:
+            filename_decoded = str(base64.urlsafe_b64decode(filename.encode('utf-8')), 'utf-8')
+        except (UnicodeDecodeError, binascii.Error):
+            errorDict = {'error' : UnicodeDecodeError.__name__, 'value' : dict() }
+            response = jsonify(errorDict)
+            response.status_code = 400
+            return response
+
+        sf = secure_filename(filename_decoded)
+        full_filename = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], sf)
         if path.isfile(full_filename):
-            return send_from_directory(full_filename)
+            return send_from_directory(SrtWebTools.app.config['UPLOAD_FOLDER'], sf)
         else:
-            return SrtWebTools.file_not_found(filename)
+            return SrtWebTools.file_not_found(filename_decoded)
 
     @app.route('/upload', methods = ['POST'])
     def upload():
@@ -48,17 +59,18 @@ class SrtWebTools:
         if file and SrtWebTools.allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], filename))
-        return redirect('/?filename=' + file.filename)
+        return redirect('/?filename=' + str(base64.urlsafe_b64encode(file.filename.encode("utf-8")), 'utf-8'))
 
     @app.route('/translate/<filename>', methods={'POST'})
     def translate(filename):
-        sf = secure_filename(filename)
+        filename_decoded = str(base64.urlsafe_b64decode(filename.encode('utf-8')), 'utf-8')
+        sf = secure_filename(filename_decoded)
         translator = TranslateSrt(Language.FR, Language.EN)
         full_filename = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], sf)
         translator.subscribe(lambda e: SrtWebTools.handleprogressevent(e))
         try:
             translator.run(full_filename)
-        except LockError as e:
+        except LockError:
             errorDict = {
                         'error' : LockError.__name__,
                         'value' : SrtWebTools.current_translation_status
@@ -66,20 +78,20 @@ class SrtWebTools:
             response = jsonify(errorDict)
             response.status_code = 400
             return response
-        except exceptions.ConnectionError as e:
+        except exceptions.ConnectionError:
             errorDict = {'error' : exceptions.ConnectionError.__name__, 'value' : dict() }
             response = jsonify(errorDict)
             response.status_code = 500
             return response
         except FileNotFoundError:
-            return SrtWebTools.file_not_found(filename)
+            return SrtWebTools.file_not_found(filename_decoded)
 
         file_content = ''
         with open(translator.outputfilename(full_filename)) as f:
             file_content = f.read()
-
+        secured_output_filename = secure_filename(translator.outputfilename(sf))
         return jsonify({
-                'filename' : secure_filename(translator.outputfilename(secure_filename(filename))),
+                'filename' : str(base64.urlsafe_b64encode(secured_output_filename.encode("utf-8")), 'utf-8'),
                 'content'  : file_content
             })
 
@@ -100,13 +112,14 @@ class SrtWebTools:
 
     @app.route('/downloadtranslation/<filename>')
     def downloadlocation(filename):
-        outputfilename = secure_filename(filename)
+        filename_decoded = str(base64.urlsafe_b64decode(filename.encode('utf-8')), 'utf-8')
+        outputfilename = secure_filename(filename_decoded)
 
         translatedfilepath = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], outputfilename)
         if path.isfile(translatedfilepath):
             return send_file(translatedfilepath, as_attachment=True)
         else:
-            return SrtWebTools.file_not_found(filename)
+            return SrtWebTools.file_not_found(filename_decoded)
 
     @app.route('/translation_status')
     def translation_status():
