@@ -1,6 +1,6 @@
 $.urlParam = function(name){
-	var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-	return results[1] || 0;
+    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    return results[1] || 0;
 }
 
 $(function(){
@@ -44,7 +44,7 @@ function requestAndSetProgress(){
 function alertErrorMessage(message){
     $("#errormessage").html('<strong>Error:</strong> ' + message);
     $(".alert").alert();
-	$(".alert").fadeIn('slow');
+    $(".alert").fadeIn('slow');
 }
 
 function translate(){
@@ -61,7 +61,7 @@ function translate(){
                 $("#downloadbutton").prop('disabled', false);
                 $('#downloadfilename').val(data.filename);
              },
-			 error: function(xhr, status, error) {
+             error: function(xhr, status, error) {
                 try {
                     data = JSON.parse(xhr.responseText);
                     if(data.error === 'LockError'){
@@ -76,7 +76,7 @@ function translate(){
                     console.error(error);
                 }
 
-			 },
+             },
              complete: function(){
                 clearInterval(refreshIntervalId);
              }
@@ -93,7 +93,6 @@ function download(){
 
 
 $( document ).ready(function() {
-     let percent = Math.round(0.12345*100*100)/100 + "%";
      filename = $.urlParam('filename');
      if(filename) {
         fillTextArea(filename)
