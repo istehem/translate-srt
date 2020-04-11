@@ -41,6 +41,11 @@ function requestAndSetProgress(){
     });
 }
 
+function alertErrorMessage(message){
+    $("#errormessage").html('<strong>Error:</strong> ' + message);
+    $(".alert").alert();
+	$(".alert").fadeIn('slow');
+}
 
 function translate(){
      filename = $.urlParam('filename');
@@ -58,10 +63,14 @@ function translate(){
              },
 			 error: function(xhr, status, error) {
                 try {
-                    let percent = percentfloatToString(JSON.parse(xhr.responseText).progress);
-                    $("#errormessage").html('<strong>Error:</strong> Translator is busy at: ' + percent);
-	                $(".alert").alert();
-	                $(".alert").fadeIn('slow');
+                    data = JSON.parse(xhr.responseText);
+                    if(data.error === 'LockError'){
+                        let percent = percentfloatToString(data.value.progress);
+                        alertErrorMessage("Translator is busy at: " + percent);
+                    }
+                    else if (data.error === 'ConnectionError'){
+                        alertErrorMessage("A connection error occured, please try again.");
+                    }
                 }
                 catch(e) {
                     console.error(error);

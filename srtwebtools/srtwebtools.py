@@ -11,6 +11,7 @@ from translatesrt.translatesrt import TranslateSrt
 from translatesrt.translatesrt import Language
 
 from zc.lockfile import LockError
+from requests import exceptions
 
 class SrtWebTools:
 
@@ -54,8 +55,17 @@ class SrtWebTools:
         try:
             translator.run(full_filename)
         except LockError as e:
-            response = jsonify(SrtWebTools.current_translation_status)
+            errorDict = {
+                        'error' : LockError.__name__,
+                        'value' : SrtWebTools.current_translation_status
+                        }
+            response = jsonify(errorDict)
             response.status_code = 400
+            return response
+        except exceptions.ConnectionError as e:
+            errorDict = {'error' : exceptions.ConnectionError.__name__, 'value' : dict() }
+            response = jsonify(errorDict)
+            response.status_code = 500
             return response
 
         file_content = ''
