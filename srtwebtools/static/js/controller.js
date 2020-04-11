@@ -1,6 +1,11 @@
 $.urlParam = function(name){
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    return results[1] || 0;
+    try {
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return results[1] || 0;
+    }
+    catch(e){
+        return 0;
+    }
 }
 
 $(function(){
@@ -16,6 +21,18 @@ function fillTextArea(filename){
         type: "GET",
         success: function(data){
             $("#srt-content").html(data);
+            $(".tm-btn-translate").prop('disabled', false);
+        },
+        error: function(xhr, status, error) {
+            try {
+                data = JSON.parse(xhr.responseText);
+                if (data.error === 'FileNotFoundError'){
+                        alertErrorMessage("File " + data.value.filename + " not found or not valid, please specify another file.");
+                }
+            }
+            catch {
+                console.error(error);
+            }
         }
     });
 }
@@ -69,7 +86,16 @@ function translate(){
                         alertErrorMessage("Translator is busy at: " + percent);
                     }
                     else if (data.error === 'ConnectionError'){
-                        alertErrorMessage("A connection error occured, please try again.");
+                        let tryAgain = "tryagain";
+                        alertErrorMessage('A connection error occured, <a id="' + tryAgain + '" href="#"> please try again.</a>');
+                        $('#' + tryAgain).click(function() {
+                            $(this).closest(".alert").hide();
+                            translate();
+                            return false;
+                        });
+                    }
+                    else if (data.error === 'FileNotFoundError'){
+                        alertErrorMessage("File " + data.value.filename + " not found or not valid, please specify another file.");
                     }
                 }
                 catch(e) {
@@ -81,6 +107,9 @@ function translate(){
                 clearInterval(refreshIntervalId);
              }
         });
+     }
+     else {
+        alertErrorMessage("Please select a file.");
      }
 }
 
@@ -95,7 +124,7 @@ function download(){
 $( document ).ready(function() {
      filename = $.urlParam('filename');
      if(filename) {
-        fillTextArea(filename)
+        fillTextArea(filename);
     }
 });
 

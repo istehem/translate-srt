@@ -31,7 +31,11 @@ class SrtWebTools:
 
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
-        return send_from_directory(SrtWebTools.app.config['UPLOAD_FOLDER'],filename)
+        full_filename = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], secure_filename(filename))
+        if path.isfile(full_filename):
+            return send_from_directory(full_filename)
+        else:
+            return SrtWebTools.file_not_found(filename)
 
     @app.route('/upload', methods = ['POST'])
     def upload():
@@ -67,6 +71,8 @@ class SrtWebTools:
             response = jsonify(errorDict)
             response.status_code = 500
             return response
+        except FileNotFoundError:
+            return SrtWebTools.file_not_found(filename)
 
         file_content = ''
         with open(translator.outputfilename(full_filename)) as f:
@@ -76,6 +82,13 @@ class SrtWebTools:
                 'filename' : secure_filename(translator.outputfilename(secure_filename(filename))),
                 'content'  : file_content
             })
+
+    @staticmethod
+    def file_not_found(filename):
+        errorDict = {'error' : FileNotFoundError.__name__, 'value' : { 'filename' : filename } }
+        response = jsonify(errorDict)
+        response.status_code = 404
+        return response
 
     @staticmethod
     def handleprogressevent(e):
@@ -93,7 +106,7 @@ class SrtWebTools:
         if path.isfile(translatedfilepath):
             return send_file(translatedfilepath, as_attachment=True)
         else:
-            abort(404)
+            return SrtWebTools.file_not_found(filename)
 
     @app.route('/translation_status')
     def translation_status():
@@ -108,8 +121,6 @@ class SrtWebTools:
     def allowed_file(filename):
         return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in SrtWebTools.ALLOWED_EXTENSIONS
-
-
 
 def main():
     parser = argparse.ArgumentParser()
