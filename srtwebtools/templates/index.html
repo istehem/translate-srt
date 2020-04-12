@@ -28,7 +28,7 @@
                 </header>
             </div>
         </div>
-        <div class="container tm-container-2">
+        <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <h2 class="text-center rtm-welcome-text">Upload file to translate</h2>
@@ -36,6 +36,37 @@
             </div>
             <hr>
             <div class="row tm-section-mt">
+                <div class="row mx-auto">
+                <div class="form-group col-lg-4 text-center">
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle srt-web-tools-btn translate-option" type="button" id="from-language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          From Language
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="from-language">
+                            <a class="dropdown-item" href="#">Action</a>
+                        </div>
+                     </div>
+                </div>
+                <div class="form-group col-lg-4 text-center">
+                    <div class="dropdown">
+                        <button class="btn dropdown-toggle srt-web-tools-btn translate-option" type="button" id="to-language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          To Language
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="to-language">
+                            <a class="dropdown-item" href="#">Action</a>
+                        </div>
+                     </div>
+                </div>
+                <div class="form-group col-lg-4 text-center">
+                    <div class="btn-group-toggle" data-toggle="buttons">
+                        <label class="btn srt-web-tools-btn active translate-option">
+                             <input type="checkbox" checked> Overwrite Translations
+                        </label>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="row">
                             <div class="col-lg-6 mb-5">
                                 <form enctype=multipart/form-data action="upload" method="post" class="tm-contact-form mx-auto">
                                     <div class="form-group">
@@ -46,13 +77,13 @@
 
                                     <div class="row">
                                         <div class="form-group col-xl-6">
-                                                <label class="btn tm-btn-upload">
+                                                <label class="btn srt-web-tools-btn">
                                                     <input type="file" name = "file" onchange='this.form.submit()'>
                                                     Upload
                                                 </label>
                                         </div>
                                         <div class="form-group col-xl-6">
-                                            <button type="button" onclick="translate()" class="btn tm-btn-translate" disabled autocomplete="off">
+                                            <button type="button" onclick="translate()" class="btn translate-btn" disabled autocomplete="off">
                                                     Translate
                                             </button>
                                         </div>
@@ -68,7 +99,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="form-group col-xl-12">
-                                             <button id="downloadbutton" type="button" onclick="download()" class="btn tm-btn-upload" disabled autocomplete="off">Download</button>
+                                             <button id="downloadbutton" type="button" onclick="download()" class="btn srt-web-tools-btn" disabled autocomplete="off">Download</button>
                                              <input type=hidden id="downloadfilename"/>
                                         </div>
                                     </div>

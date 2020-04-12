@@ -191,8 +191,13 @@ hr {
     margin-bottom: 85px;
 }
 
+
 .tm-section-mt {
     margin-top: 85px;
+}
+
+.tm-under-section-mt {
+    margin-top: 20px;
 }
 
 .tm-contact-form {
@@ -234,7 +239,7 @@ iframe {
     height: 300px;
 }
 
-.tm-btn-upload, .tm-btn-translate {
+.translate-btn, .srt-web-tools-btn {
     border-radius: 0;
     font-size: 1.1rem;
     padding: 12px 50px;
@@ -243,15 +248,15 @@ iframe {
     color: #CCCCCC;
 }
 
-.tm-btn-translate:hover,
-.tm-btn-translate:focus,
-.tm-btn-upload:hover,
-.tm-btn-upload:focus {
+.srt-web-tools-btn:hover,
+.srt-web-tools-btn:focus,
+.translate-btn:hover,
+.translate-btn:focus {
     background: #CCCCCC;
     color: #333333;
 }
 
-.tm-btn-translate {
+.translate-btn {
     float: right;
 }
 
@@ -375,4 +380,8 @@ input[type="file"] {
 .alert-danger a {
     color : #721c24;
     text-decoration: underline;
+}
+
+.translate-option {
+    width : 350px
 }
