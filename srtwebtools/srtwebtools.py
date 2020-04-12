@@ -1,7 +1,6 @@
 from flask import Flask, render_template, send_from_directory, request, flash, redirect, url_for, abort, send_file, jsonify, Response, make_response
 import pathlib
 from os import path
-from werkzeug.utils import secure_filename
 from functools import wraps
 import argparse
 import base64
@@ -34,14 +33,14 @@ class SrtWebTools:
     @app.route('/uploads/<filename>')
     def uploaded_file(filename):
         try:
-            filename_decoded = str(base64.urlsafe_b64decode(filename.encode('utf-8')), 'utf-8')
+            filename_decoded = str(base64.urlsafe_b64decode(filename.encode()), 'utf-8')
         except (UnicodeDecodeError, binascii.Error):
             errorDict = {'error' : UnicodeDecodeError.__name__, 'value' : dict() }
             response = jsonify(errorDict)
             response.status_code = 400
             return response
 
-        sf = secure_filename(filename_decoded)
+        sf = SrtWebTools.secure_filename(filename_decoded)
         full_filename = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], sf)
         if path.isfile(full_filename):
             return send_from_directory(SrtWebTools.app.config['UPLOAD_FOLDER'], sf)
@@ -57,14 +56,15 @@ class SrtWebTools:
         if file.filename == '':
             flash('No selected file')
         if file and SrtWebTools.allowed_file(file.filename):
-            filename = secure_filename(file.filename)
+            filename = SrtWebTools.secure_filename(file.filename)
+            print(filename)
             file.save(path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], filename))
-        return redirect('/?filename=' + str(base64.urlsafe_b64encode(file.filename.encode("utf-8")), 'utf-8'))
+        return redirect('/?filename=' + str(base64.urlsafe_b64encode(file.filename.encode()), 'utf-8'))
 
     @app.route('/translate/<filename>', methods={'POST'})
     def translate(filename):
-        filename_decoded = str(base64.urlsafe_b64decode(filename.encode('utf-8')), 'utf-8')
-        sf = secure_filename(filename_decoded)
+        filename_decoded = str(base64.urlsafe_b64decode(filename.encode()), 'utf-8')
+        sf = SrtWebTools.secure_filename(filename_decoded)
         translator = TranslateSrt(Language.FR, Language.EN)
         full_filename = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], sf)
         translator.subscribe(lambda e: SrtWebTools.handleprogressevent(e))
@@ -89,9 +89,9 @@ class SrtWebTools:
         file_content = ''
         with open(translator.outputfilename(full_filename)) as f:
             file_content = f.read()
-        secured_output_filename = secure_filename(translator.outputfilename(sf))
+        secured_output_filename = SrtWebTools.secure_filename(translator.outputfilename(sf))
         return jsonify({
-                'filename' : str(base64.urlsafe_b64encode(secured_output_filename.encode("utf-8")), 'utf-8'),
+                'filename' : str(base64.urlsafe_b64encode(secured_output_filename.encode()), 'utf-8'),
                 'content'  : file_content
             })
 
@@ -112,8 +112,8 @@ class SrtWebTools:
 
     @app.route('/downloadtranslation/<filename>')
     def downloadlocation(filename):
-        filename_decoded = str(base64.urlsafe_b64decode(filename.encode('utf-8')), 'utf-8')
-        outputfilename = secure_filename(filename_decoded)
+        filename_decoded = str(base64.urlsafe_b64decode(filename.encode()), 'utf-8')
+        outputfilename = SrtWebTools.secure_filename(filename_decoded)
 
         translatedfilepath = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], outputfilename)
         if path.isfile(translatedfilepath):
@@ -134,6 +134,10 @@ class SrtWebTools:
     def allowed_file(filename):
         return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in SrtWebTools.ALLOWED_EXTENSIONS
+
+    @staticmethod
+    def secure_filename(filename):
+       return path.basename(filename)
 
 def main():
     parser = argparse.ArgumentParser()
