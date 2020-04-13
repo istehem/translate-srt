@@ -256,6 +256,10 @@ iframe {
     color: #333333;
 }
 
+.checkbox-active{
+    border-color: #FF0000;
+}
+
 .translate-btn {
     float: right;
 }

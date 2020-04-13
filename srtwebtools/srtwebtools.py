@@ -125,6 +125,10 @@ class SrtWebTools:
     def translation_status():
         return jsonify(SrtWebTools.current_translation_status)
 
+    @app.route('/languages')
+    def languages():
+        return jsonify({ 'languages' : [ str(l) for l in Language ] })
+
     @app.route('/')
     def home():
         return render_template('index.html')

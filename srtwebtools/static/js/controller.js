@@ -15,13 +15,14 @@ $(function(){
 });
 
 
+
 function fillTextArea(filename){
     request = $.ajax({
         url: "uploads/" + filename,
         type: "GET",
         success: function(data){
             $("#srt-content").html(encode(data));
-            $(".tm-btn-translate").prop('disabled', false);
+            $(".translate-btn").prop('disabled', false);
         },
         error: function(xhr, status, error) {
             try {
@@ -82,7 +83,6 @@ function alertErrorMessage(message, id, linktext){
     alertError();
 }
 
-
 function translate(){
      filename = $.urlParam('filename');
      var refreshIntervalId = setInterval(function(){requestAndSetProgress()}, 500);
@@ -139,12 +139,42 @@ function download(){
     }
 }
 
+function add_language_item(dropdown, language){
+    dropdown.parent().children('.dropdown-menu').append('<a class="dropdown-item" href="#">' + language + '</a>');
+}
+
+function add_languages(){
+    request = $.ajax({
+        url: "languages",
+        type: "GET",
+        success: function(data){
+            let to_languages = $("#to-language");
+            let from_languages = $("#from-language");
+            $.each(data.languages, function(index, language){
+                add_language_item(to_languages, language);
+                add_language_item(from_languages, language);
+            });
+        }
+    });
+}
 
 $( document ).ready(function() {
      filename = $.urlParam('filename');
      if(filename) {
         fillTextArea(filename);
     }
+    $("#overwrite-translation").on("change", function(){
+        $(this).button('toggle');
+        if($(this).hasClass("active")){
+            //$(this).closest('.btn').addClass('fa fa-check');
+            $(this).closest('.btn').addClass('checkbox-active');
+        }
+        else{
+            //$(this).closest('.btn').removeClass('fa fa-check');
+            $(this).closest('.btn').removeClass('checkbox-active');
+        }
+    });
+    add_languages();
 });
 
 
