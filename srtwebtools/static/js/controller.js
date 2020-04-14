@@ -102,6 +102,12 @@ function translate(){
          request = $.ajax({
              url: "translate/" + filename,
              type: "POST",
+             dataType : "json",
+             contentType: "application/json; charset=utf-8",
+             data: JSON.stringify({
+                from_lang : from_lang,
+                to_lang : to_lang
+             }),
              success: function(data){
                 $("#srt-modified-content").html(encode(data.content));
                 setProgress(1);
@@ -151,6 +157,30 @@ function download(){
 }
 
 
+function set_from_to_languages(dropdown, value){
+
+    let dropdownButton = dropdown.children(".btn");
+    dropdownButton.val(value);
+
+    dropdownButton.filter(function(){
+        return dropdown.is("[translate-option='from']")
+    }).html("From Language: " + dropdownButton.val());
+    dropdownButton.filter(function(){
+        return dropdown.is("[translate-option='to']")
+    }).html("To Language: " + dropdownButton.val());
+}
+
+function set_default_languages(){
+    request = $.ajax({
+        url: "default_languages",
+        type: "GET",
+        success: function(data){
+             set_from_to_languages($(".dropdown[translate-option='from']"), data.from_lang);
+             set_from_to_languages($(".dropdown[translate-option='to']"), data.to_lang);
+        }
+    });
+}
+
 function add_languages(){
     request = $.ajax({
         url: "languages",
@@ -161,16 +191,9 @@ function add_languages(){
                 language_dropdown.children(".dropdown-menu").append('<div class="dropdown-item">' + language + '</div>');
             });
             $('.dropdown-item').click(function(event){
-                let dropdown = $(this).closest(".dropdown");
-                let dropdownButton = dropdown.children(".btn");
-                dropdownButton.val($(this).html());
-                dropdownButton.filter(function(){
-                    return dropdown.is("[translate-option='from']")
-                }).html("From Language: " + dropdownButton.val());
-                dropdownButton.filter(function(){
-                    return dropdown.is("[translate-option='to']")
-                }).html("To Language: " + dropdownButton.val());
+                set_from_to_languages($(this).closest(".dropdown"), $(this).html());
             });
+            set_default_languages();
         }
     });
 }

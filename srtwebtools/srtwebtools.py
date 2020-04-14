@@ -63,11 +63,23 @@ class SrtWebTools:
 
     @app.route('/translate/<filename>', methods={'POST'})
     def translate(filename):
+
+        data = request.json
+        from_lang_str = data.get('from_lang')
+        from_lang = Language[from_lang_str.upper()] if from_lang_str else Language.FR
+        to_lang_str = data.get('to_lang')
+        to_lang = Language[to_lang_str.upper()] if to_lang_str else Language.EN
+
+        print("fromlang: " + str(from_lang))
+        print("tolang: " + str(to_lang))
+
+        translator = TranslateSrt(from_lang, to_lang)
+        translator.subscribe(lambda e: SrtWebTools.handleprogressevent(e))
+
         filename_decoded = str(base64.urlsafe_b64decode(filename.encode()), 'utf-8')
         sf = SrtWebTools.secure_filename(filename_decoded)
-        translator = TranslateSrt(Language.FR, Language.EN)
         full_filename = path.join(SrtWebTools.app.config['UPLOAD_FOLDER'], sf)
-        translator.subscribe(lambda e: SrtWebTools.handleprogressevent(e))
+
         try:
             translator.run(full_filename)
         except LockError:
@@ -128,6 +140,14 @@ class SrtWebTools:
     @app.route('/languages')
     def languages():
         return jsonify({ 'languages' : [ str(l) for l in Language ] })
+
+    @app.route('/default_languages')
+    def default_languages():
+        return jsonify ({
+             'from_lang' : str(Language.FR),
+             'to_lang'   : str(Language.EN)
+            })
+
 
     @app.route('/')
     def home():
