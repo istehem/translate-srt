@@ -85,9 +85,20 @@ function alertErrorMessage(message, id, linktext){
 
 function translate(){
      filename = $.urlParam('filename');
-     var refreshIntervalId = setInterval(function(){requestAndSetProgress()}, 500);
 
      if(filename){
+         let from_lang = $(".dropdown[translate-option='from']").children(".btn").val();
+         if(!from_lang){
+            alertErrorMessage("Please specify a language to translate from.");
+            return false;
+         }
+         let to_lang = $(".dropdown[translate-option='to']").children(".btn").val();
+         if(!to_lang){
+            alertErrorMessage("Please specify a language to translate to.");
+            return false;
+         }
+
+         var refreshIntervalId = setInterval(function(){requestAndSetProgress()}, 500);
          request = $.ajax({
              url: "translate/" + filename,
              type: "POST",
@@ -139,20 +150,26 @@ function download(){
     }
 }
 
-function add_language_item(dropdown, language){
-    dropdown.parent().children('.dropdown-menu').append('<a class="dropdown-item" href="#">' + language + '</a>');
-}
 
 function add_languages(){
     request = $.ajax({
         url: "languages",
         type: "GET",
         success: function(data){
-            let to_languages = $("#to-language");
-            let from_languages = $("#from-language");
+            let language_dropdown = $(".dropdown[translate-option]");
             $.each(data.languages, function(index, language){
-                add_language_item(to_languages, language);
-                add_language_item(from_languages, language);
+                language_dropdown.children(".dropdown-menu").append('<div class="dropdown-item">' + language + '</div>');
+            });
+            $('.dropdown-item').click(function(event){
+                let dropdown = $(this).closest(".dropdown");
+                let dropdownButton = dropdown.children(".btn");
+                dropdownButton.val($(this).html());
+                dropdownButton.filter(function(){
+                    return dropdown.is("[translate-option='from']")
+                }).html("From Language: " + dropdownButton.val());
+                dropdownButton.filter(function(){
+                    return dropdown.is("[translate-option='to']")
+                }).html("To Language: " + dropdownButton.val());
             });
         }
     });
