@@ -106,7 +106,8 @@ function translate(){
              contentType: "application/json; charset=utf-8",
              data: JSON.stringify({
                 from_lang : from_lang,
-                to_lang : to_lang
+                to_lang : to_lang,
+                overwrite : $("#overwrite-translation").hasClass("active")
              }),
              success: function(data){
                 $("#srt-modified-content").html(encode(data.content));
