@@ -65,44 +65,44 @@
                 </div>
             </div>
             <div class="row">
-                            <div class="col-lg-6 mb-5">
-                                <form enctype=multipart/form-data action="upload" method="post" class="tm-contact-form mx-auto">
-                                    <div class="form-group">
-                                        <textarea id="srt-content" name="contact_message" class="form-control"
-                                                rows="6" placeholder="Content of srt-file to translate..." required readonly>
-                                        </textarea>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-xl-6">
-                                                <label class="btn srt-web-tools-btn">
-                                                    <input type="file" name = "file" onchange='this.form.submit()'>
-                                                    Upload
-                                                </label>
-                                        </div>
-                                        <div class="form-group col-xl-6">
-                                            <button type="button" onclick="translate()" class="btn translate-btn" disabled autocomplete="off">
-                                                    Translate
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                    <div class="col-lg-6 mb-5">
+                        <form enctype=multipart/form-data action="upload" method="post" class="tm-contact-form mx-auto">
+                            <div class="form-group">
+                                <textarea id="srt-content" name="contact_message" class="form-control"
+                                        rows="6" placeholder="Content of srt-file to translate..." required readonly>
+                                </textarea>
                             </div>
-                            <div class="col-lg-6 mb-5">
-                                <form enctype=multipart/form-data action="download" method="get" class="tm-contact-form mx-auto">
-                                    <div class="form-group">
-                                        <textarea id="srt-modified-content" name="contact_message" class="form-control"
-                                                rows="6" placeholder="Content of srt-file to translate..." required readonly>
-                                        </textarea>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col-xl-12">
-                                             <button id="downloadbutton" type="button" onclick="download()" class="btn srt-web-tools-btn" disabled autocomplete="off">Download</button>
-                                             <input type=hidden id="downloadfilename"/>
-                                        </div>
-                                    </div>
-                                </form>
-                             </div>
+
+                            <div class="row">
+                                <div class="form-group col-xl-6">
+                                        <label class="btn srt-web-tools-btn">
+                                            <input type="file" name = "file" onchange='this.form.submit()'>
+                                            Upload
+                                        </label>
+                                </div>
+                                <div class="form-group col-xl-6">
+                                    <button type="button" onclick="translate()" class="btn translate-btn" disabled autocomplete="off">
+                                            Translate
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-6 mb-5">
+                        <form enctype=multipart/form-data action="download" method="get" class="tm-contact-form mx-auto">
+                            <div class="form-group">
+                                <textarea id="srt-modified-content" name="contact_message" class="form-control"
+                                        rows="6" placeholder="Content of srt-file to translate..." required readonly>
+                                </textarea>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-xl-12">
+                                     <button id="downloadbutton" type="button" onclick="download()" class="btn srt-web-tools-btn" disabled autocomplete="off">Download</button>
+                                     <input type=hidden id="downloadfilename"/>
+                                </div>
+                            </div>
+                        </form>
+                     </div>
             </div>
             <div class="row">
                 <div class="col-lg-12">
