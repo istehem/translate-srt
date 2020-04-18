@@ -1,128 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-    <title>Srt Web Tools</title>
-
-    <!-- load CSS -->
-    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
-    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/css/templatemo-style.css">
+  <meta name="generator" content=
+  "HTML Tidy for HTML5 for Linux version 5.6.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content=
+  "width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Srt Web Tools</title><!-- load CSS -->
+  <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/css/templatemo-style.css">
 </head>
-
 <body>
-    <div class="alert alert-danger alert-dismissible fade show" style="display: none;">
-        <div id=errormessage>
-        </div>
-        <button type="button" class="close" data-hide="alert">&times;</button>
+  <div class="alert alert-danger alert-dismissible fade show"
+  style="display: none;">
+    <div id="errormessage"></div><button type="button" class=
+    "close" data-hide="alert">×</button>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <header class="text-center tm-site-header">
+          <h1 class="tm-site-title">Srt Web Tools</h1>
+        </header>
+      </div>
     </div>
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <header class="text-center tm-site-header">
-                    <h1 class="tm-site-title">Srt Web Tools</h1>
-                </header>
-            </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <h2 class="text-center rtm-welcome-text">Upload file to
+          translate</h2>
         </div>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="text-center rtm-welcome-text">Upload file to translate</h2>
-                </div>
+      </div>
+      <hr>
+      <div class="row tm-section-mt">
+        <div class="row mx-auto">
+          <div class="form-group col-lg-4 text-center">
+            <div class="dropdown" translate-option="from">
+              <button class=
+              "btn dropdown-toggle srt-web-tools-btn translate-option"
+              type="button" data-toggle="dropdown" aria-haspopup=
+              "true" aria-expanded="false">From Language</button>
+              <div class="dropdown-menu" aria-labelledby=
+              "from-language"></div>
             </div>
-            <hr>
-            <div class="row tm-section-mt">
-                <div class="row mx-auto">
-                <div class="form-group col-lg-4 text-center">
-                    <div class="dropdown" translate-option="from">
-                        <button class="btn dropdown-toggle srt-web-tools-btn translate-option" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          From Language
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="from-language">
-                        </div>
-                     </div>
-                </div>
-                <div class="form-group col-lg-4 text-center">
-                    <div class="dropdown" translate-option="to">
-                        <button class="btn dropdown-toggle srt-web-tools-btn translate-option" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          To Language
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="to-language">
-                        </div>
-                     </div>
-                </div>
-                <div class="form-group col-lg-4 text-center">
-                    <div class="btn-group-toggle" data-toggle="buttons">
-                        <label class="btn srt-web-tools-btn active translate-option">
-                           <input id="overwrite-translation" type="checkbox"> Overwrite Translations
-                        </label>
-                    </div>
-                </div>
-                </div>
+          </div>
+          <div class="form-group col-lg-4 text-center">
+            <div class="dropdown" translate-option="to">
+              <button class=
+              "btn dropdown-toggle srt-web-tools-btn translate-option"
+              type="button" data-toggle="dropdown" aria-haspopup=
+              "true" aria-expanded="false">To Language</button>
+              <div class="dropdown-menu" aria-labelledby=
+              "to-language"></div>
             </div>
-            <div class="row">
-                    <div class="col-lg-6 mb-5">
-                        <form enctype=multipart/form-data action="upload" method="post" class="tm-contact-form mx-auto">
-                            <div class="form-group">
-                                <textarea id="srt-content" name="contact_message" class="form-control"
-                                        rows="6" placeholder="Content of srt-file to translate..." required readonly>
-                                </textarea>
-                            </div>
-
-                            <div class="row">
-                                <div class="form-group col-xl-6">
-                                        <label class="btn srt-web-tools-btn">
-                                            <input type="file" name = "file" onchange='this.form.submit()'>
-                                            Upload
-                                        </label>
-                                </div>
-                                <div class="form-group col-xl-6">
-                                    <button type="button" onclick="translate()" class="btn translate-btn" disabled autocomplete="off">
-                                            Translate
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="col-lg-6 mb-5">
-                        <form enctype=multipart/form-data action="download" method="get" class="tm-contact-form mx-auto">
-                            <div class="form-group">
-                                <textarea id="srt-modified-content" name="contact_message" class="form-control"
-                                        rows="6" placeholder="Content of srt-file to translate..." required readonly>
-                                </textarea>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col-xl-12">
-                                     <button id="downloadbutton" type="button" onclick="download()" class="btn srt-web-tools-btn" disabled autocomplete="off">Download</button>
-                                     <input type=hidden id="downloadfilename"/>
-                                </div>
-                            </div>
-                        </form>
-                     </div>
+          </div>
+          <div class="form-group col-lg-4 text-center">
+            <div class="btn-group-toggle" data-toggle="buttons">
+              <label class=
+              "btn srt-web-tools-btn active translate-option"><input id="overwrite-translation"
+              type="checkbox"> Overwrite Translations</label>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="progress">
-                         <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuemax="100">0%</div>
-                    </div>
-                </div>
-            </div>
+          </div>
         </div>
-        <footer class="row mt-5 mb-5">
-            <div class="col-lg-12">
+      </div>
+      <div class="row">
+        <div class="col-lg-6 mb-5">
+          <form enctype="multipart/form-data" action="upload"
+          method="post" class="tm-contact-form mx-auto">
+            <div class="form-group">
+              <textarea id="srt-content" name="contact_message"
+              class="form-control" rows="6" placeholder=
+              "Content of srt-file to translate..." required=""
+              readonly></textarea>
             </div>
-        </footer>
+            <div class="row">
+              <div class="form-group col-xl-6">
+                <label class="btn srt-web-tools-btn"><input type=
+                "file" name="file" onchange='this.form.submit()'>
+                Upload</label>
+              </div>
+              <div class="form-group col-xl-6">
+                <button type="button" onclick="translate()" class=
+                "btn translate-btn" disabled autocomplete=
+                "off">Translate</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="col-lg-6 mb-5">
+          <form enctype="multipart/form-data" action="download"
+          method="get" class="tm-contact-form mx-auto">
+            <div class="form-group">
+              <textarea id="srt-modified-content" name=
+              "contact_message" class="form-control" rows="6"
+              placeholder="Content of srt-file to translate..."
+              required="" readonly></textarea>
+            </div>
+            <div class="row">
+              <div class="form-group col-xl-12">
+                <button id="downloadbutton" type="button" onclick=
+                "download()" class="btn srt-web-tools-btn" disabled
+                autocomplete="off">Download</button> <input type=
+                "hidden" id="downloadfilename">
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style=
+            "width: 0%;" aria-valuemin="0" aria-valuemax="100">
+              0%
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <!-- .container -->
-
-    <script src="static/js/jquery.min.js"></script>
-    <script src="static/js/popper.min.js"></script>
-    <script src="static/js/controller.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
-
+    <footer class="row mt-5 mb-5">
+      <div class="col-lg-12"></div>
+    </footer>
+  </div><!-- .container -->
+  <script src="static/js/jquery.min.js"></script>
+  <script src="static/js/popper.min.js"></script>
+  <script src="static/js/controller.js"></script>
+  <script src="static/js/bootstrap.min.js"></script>
 </body>
 </html>
