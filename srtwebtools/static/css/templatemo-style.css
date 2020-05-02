@@ -256,8 +256,8 @@ iframe {
     color: #333333;
 }
 
-.btn:not(:disabled):not(.disabled).active.checkbox-active{
-    background-image: linear-gradient(#333333, black);
+.checkbox-active{
+    border-color: #FF0000;
 }
 
 .translate-btn {
@@ -388,16 +388,4 @@ input[type="file"] {
 
 .translate-option {
     width : 350px
-}
-
-
-
-.carousel-controls{
- position:relative;
-  width:300px;
-  margin:0 auto;
-}
-
-.carousel-indicators{
-   top:0px;
 }
