@@ -24,10 +24,14 @@ setuptools.setup(
 
     classifiers = ['Programming Language :: Python :: 3'],
 
-    install_requires=['ZODB', 'requests'],
+    install_requires=['ZODB', 'requests', 'urwid'],
 
     entry_points = {
-        'console_scripts' : ['translate-srt = translatesrt:main', 'delay-srt = delaysrt:main']
+        'console_scripts' : [
+            'translate-srt = translatesrt:main',
+            'delay-srt = delaysrt:main',
+            'browse-srt = browsesrt:main'
+            ]
     }
 
 )
