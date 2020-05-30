@@ -10,11 +10,6 @@ import urwid
 import copy
 
 from common.utils import projectroot
-from translatesrt.language import Language
-
-
-TranslationKey = namedtuple('TranslationKey', ['language', 'text'])
-
 
 class BrowseSrt:
 
@@ -37,9 +32,6 @@ class BrowseSrt:
     def configure_db(self):
         storage = ZODB.FileStorage.FileStorage(self.db_filename())
         self.db = ZODB.DB(storage)
-
-    def exit_program(self, button):
-        raise urwid.ExitMainLoop()
 
     def format_key(self, k):
         return f'{k.language}: {k.text}'
@@ -81,7 +73,7 @@ class BrowseSrt:
     def item_chosen(self, button, key):
         main_menu = copy.copy(self.main.original_widget)
         translations = self.get_translations(key)
-        responses = [urwid.Text([f'{str(key.language)} : {key.text}'])]
+        responses = [urwid.Text([self.format_key(key)])]
         for l, t in translations.items():
             response = urwid.Text([f'{str(l)} : {str(t)}', '\n'])
             responses.append(response)
