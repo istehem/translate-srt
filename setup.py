@@ -56,7 +56,7 @@ setuptools.setup(
 
     classifiers = ['Programming Language :: Python :: 3'],
 
-    install_requires=['ZODB', 'requests', 'urwid', 'django'],
+    install_requires=['ZODB', 'requests', 'urwid'],
 
     entry_points = {
         'console_scripts' : [
