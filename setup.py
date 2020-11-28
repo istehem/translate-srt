@@ -7,33 +7,35 @@ from setuptools.command.egg_info import egg_info
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-def custom_command():
+def compile_label_translations():
     import os
     import sys
     import pathlib
-    import subprocess
+    from pythongettext.msgfmt import Msgfmt
     curdir = pathlib.Path(__file__).parent.absolute()
-    os.chdir(os.path.join(curdir, 'browsesrt', 'locales', 'en_US', 'LC_MESSAGES'))
-    subprocess.check_output(['msgfmt', '-o', 'browsesrt.mo', 'browsesrt'])
-    os.chdir(curdir)
+    path = os.path.join(curdir, 'browsesrt', 'locales', 'en_US', 'LC_MESSAGES')
+    po_path = os.path.join(path, 'browsesrt.po')
+    mo_bytes = Msgfmt(po_path).get()
+    mo_path = os.path.join(path, 'browsesrt.mo')
+    with open(mo_path, 'wb') as mo_file:
+        mo_file.write(mo_bytes)
 
 
 class CustomInstallCommand(install):
     def run(self):
         install.run(self)
-        custom_command()
+        compile_label_translations()
 
 
 class CustomDevelopCommand(develop):
     def run(self):
         develop.run(self)
-        custom_command()
+        compile_label_translations()
 
 
 class CustomEggInfoCommand(egg_info):
     def run(self):
         egg_info.run(self)
-        custom_command()
 
 setuptools.setup(
     name = 'translate-srt',
@@ -56,7 +58,7 @@ setuptools.setup(
 
     classifiers = ['Programming Language :: Python :: 3'],
 
-    install_requires=['ZODB', 'requests', 'urwid'],
+    install_requires=['ZODB', 'requests', 'urwid', 'python-gettext'],
 
     entry_points = {
         'console_scripts' : [
