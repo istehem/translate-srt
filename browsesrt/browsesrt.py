@@ -11,6 +11,8 @@ import copy
 
 from common.utils import projectroot
 
+from browsesrt.filterablelistwalker import FilterableListWalker
+
 class BrowseSrt:
 
     def __init__(self):
@@ -21,7 +23,7 @@ class BrowseSrt:
         listbox = self.menu(self.get_keys())
         return urwid.Frame(listbox,
                 urwid.Pile([
-                    urwid.Text(['Translation Entries:', self.db_filename()]),
+                    urwid.Text([_('Translation Entries:'), ' ', self.db_filename()]),
                     urwid.Divider(div_char='_'),
                     urwid.Text(['\n'])]))
 
@@ -78,7 +80,7 @@ class BrowseSrt:
             response = urwid.Text([f'{str(l)} : {str(t)}', '\n'])
             responses.append(response)
 
-        done = urwid.Button(u'Back')
+        done = urwid.Button(_('Back'))
         responses.append(urwid.AttrMap(done, None, focus_map='reversed'))
         urwid.connect_signal(done, 'click', self.set_current_widget, main_menu)
         self.main.original_widget = urwid.Filler(urwid.Pile(responses))
@@ -92,7 +94,7 @@ class BrowseSrt:
             button = urwid.Button(self.format_key(e))
             urwid.connect_signal(button, 'click', self.item_chosen, e)
             body.append(urwid.AttrMap(button, None, focus_map='reversed'))
-        return urwid.ListBox(urwid.SimpleFocusListWalker(body))
+        return urwid.ListBox(FilterableListWalker(body))
 
 def main():
     BrowseSrt()

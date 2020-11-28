@@ -7,3 +7,4 @@ translate_srt.egg-info
 __pycache__
 upload
 *.pyc
+*.mo
