@@ -32,11 +32,6 @@ class CustomDevelopCommand(develop):
         develop.run(self)
         compile_label_translations()
 
-
-class CustomEggInfoCommand(egg_info):
-    def run(self):
-        egg_info.run(self)
-
 setuptools.setup(
     name = 'translate-srt',
 
@@ -70,6 +65,6 @@ setuptools.setup(
     cmdclass={
         'install': CustomInstallCommand,
         'develop': CustomDevelopCommand,
-        'egg_info': CustomEggInfoCommand,
+        'egg_info': egg_info
     }
 )
