@@ -105,13 +105,13 @@ def main():
     parser.add_argument('-l', '--use-lang', type=Language,
                help='internationalization and localization, default ({})'.format(i18n), default=i18n)
     args = parser.parse_args()
-    if args.use_lang == Language.DE:
-        de = gettext.translation('browsesrt', localedir = path.join(projectroot(), 'browsesrt', 'locales'), languages=['de'])
-        de.install()
-        _ = de.gettext
-    else:
-        en = gettext.translation('browsesrt', localedir = path.join(projectroot(), 'browsesrt', 'locales'), languages=['en_US'])
-        en.install()
-        _ = en.gettext
 
+    languages = []
+    if args.use_lang == Language.DE:
+        languages=['de']
+    else:
+        languages = ['en_US']
+    lang = gettext.translation('browsesrt', localedir = path.join(projectroot(), 'browsesrt', 'locales'), languages = languages)
+    lang.install()
+    _ = lang.gettext
     BrowseSrt()
