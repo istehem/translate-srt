@@ -8,8 +8,11 @@ import transaction
 
 import urwid
 import copy
+import argparse
+import gettext
 
 from common.utils import projectroot
+from common.language import Language
 
 from browsesrt.filterablelistwalker import FilterableListWalker
 
@@ -97,4 +100,18 @@ class BrowseSrt:
         return urwid.ListBox(FilterableListWalker(body))
 
 def main():
+    i18n = Language.EN
+    parser = argparse.ArgumentParser(description='Browse available translatons')
+    parser.add_argument('-l', '--use-lang', type=Language,
+               help='internationalization and localization, default ({})'.format(i18n), default=i18n)
+    args = parser.parse_args()
+    if args.use_lang == Language.DE:
+        de = gettext.translation('browsesrt', localedir = path.join(projectroot(), 'browsesrt', 'locales'), languages=['de'])
+        de.install()
+        _ = de.gettext
+    else:
+        en = gettext.translation('browsesrt', localedir = path.join(projectroot(), 'browsesrt', 'locales'), languages=['en_US'])
+        en.install()
+        _ = en.gettext
+
     BrowseSrt()

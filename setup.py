@@ -1,4 +1,5 @@
 import setuptools
+import os
 from setuptools.command.install import install
 from setuptools.command.develop import develop
 from setuptools.command.egg_info import egg_info
@@ -8,18 +9,24 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 def compile_label_translations():
-    import os
-    import sys
     import pathlib
     from pythongettext.msgfmt import Msgfmt
     curdir = pathlib.Path(__file__).parent.absolute()
-    path = os.path.join(curdir, 'browsesrt', 'locales', 'en_US', 'LC_MESSAGES')
-    po_path = os.path.join(path, 'browsesrt.po')
-    mo_bytes = Msgfmt(po_path).get()
-    mo_path = os.path.join(path, 'browsesrt.mo')
-    with open(mo_path, 'wb') as mo_file:
-        mo_file.write(mo_bytes)
+    path_locales = os.path.join(curdir, 'browsesrt', 'locales')
 
+    for (dirpath, dirnames, filenames) in os.walk(path_locales):
+        po_file = next((x for x in filenames if is_po_file(x)), None)
+        if po_file:
+            name, extension = os.path.splitext(po_file)
+            po_path = os.path.join(dirpath, po_file)
+            mo_path = os.path.join(dirpath, name + '.mo')
+            mo_bytes = Msgfmt(po_path).get()
+            with open(mo_path, 'wb') as mo_file:
+                mo_file.write(mo_bytes)
+
+def is_po_file(filename):
+    name, extension = os.path.splitext(filename)
+    return extension == '.po'
 
 class CustomInstallCommand(install):
     def run(self):

@@ -1,5 +1,4 @@
-from  persistent import Persistent
-from .language import Language
+from persistent import Persistent
 
 class Translation(Persistent):
     def __init__(self, fromLanguage, originalText):

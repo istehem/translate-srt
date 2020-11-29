@@ -4,9 +4,9 @@ import argparse
 
 from .translator import Translator
 from .progressbar import ProgressBar
-from .language import Language
 from .translationhandler import TranslationHandler
 
+from common.language import Language
 from common.observable import Observable
 from common.eventtype import EventType
 from common.subtitle_entry import SubtitleEntry

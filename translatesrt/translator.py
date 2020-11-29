@@ -2,7 +2,7 @@ import requests
 import json
 import subprocess
 from os import path
-from .language import Language
+from common.language import Language
 
 class Translator:
     def __init__(self, f = Language.FR, t = Language.EN):

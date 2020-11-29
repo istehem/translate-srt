@@ -4,7 +4,7 @@ import transaction
 from os import path
 import pathlib
 
-from .language import Language
+from common.language import Language
 from .translation import Translation
 from .translator import Translator
 
