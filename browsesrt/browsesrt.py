@@ -14,6 +14,7 @@ import gettext
 from common.utils import projectroot
 from common.language import Language
 
+from browsesrt.languageaction import LanguageAction
 from browsesrt.filterablelistwalker import FilterableListWalker
 
 class BrowseSrt:
@@ -102,16 +103,16 @@ class BrowseSrt:
 def main():
     i18n = Language.EN
     parser = argparse.ArgumentParser(description='Browse available translatons')
-    parser.add_argument('-l', '--use-lang', type=Language,
+    parser.add_argument('-l', '--use-lang', type=Language, action=LanguageAction,
                help='internationalization and localization, default ({})'.format(i18n), default=i18n)
     args = parser.parse_args()
 
-    languages = []
-    if args.use_lang == Language.DE:
-        languages=['de']
-    else:
-        languages = ['en_US']
-    lang = gettext.translation('browsesrt', localedir = path.join(projectroot(), 'browsesrt', 'locales'), languages = languages)
+    language_key = {
+            Language.DE : 'de',
+            Language.EN : 'en_US'
+        }.get(args.use_lang)
+
+    lang = gettext.translation('browsesrt', localedir = path.join(projectroot(), 'browsesrt', 'locales'), languages = [language_key])
     lang.install()
     _ = lang.gettext
     BrowseSrt()
