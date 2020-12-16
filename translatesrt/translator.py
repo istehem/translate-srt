@@ -34,7 +34,7 @@ class Translator:
 
         resp = requests.get(url, params=data)
         if resp.status_code != 200:
-            raise ValueError('GET error {}'.format(resp.status_code))
+            raise ValueError('GET request {} failed with error {}'.format(resp.request.url, resp.status_code))
         result = ''.join([ x[0] for x in resp.json()[0] if x[0] ])
         return result
 
