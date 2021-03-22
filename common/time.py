@@ -10,6 +10,9 @@ class Time:
         self.milliseconds = 0
         self.__add_with_values(int(hours), int(minutes), int(seconds), int(milliseconds))
 
+    def __add__(self, time : Time) -> Time:
+        return self.add(time)
+
     def add(self, time : Time) -> Time:
         self.__add_with_values(time.hours, time.minutes, time.seconds, time.milliseconds)
         return self
