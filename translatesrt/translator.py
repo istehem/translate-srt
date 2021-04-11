@@ -1,57 +1,73 @@
 import requests
 import json
-import subprocess
-from os import path
+import re
+import urllib
+from random import randrange
 from .language import Language
+
 
 class Translator:
     def __init__(self, f = Language.FR, t = Language.EN):
-        self.opts = self.getDefaults()
-        self.opts['from'] = f
-        self.opts['to'] = t
+        self.from_language = f
+        self.to_language = t
 
     def translate(self, text):
-        return self.sendRequest(text)
+        text = text.replace('\n', '')
+        baseurl = 'https://translate.google.com'
+        resp = requests.get(baseurl)
 
-    def sendRequest(self, text):
-        url = 'https://translate.google.com/translate_a/single'
         data = {
-            'client': self.opts['client'],
-            'sl': self.opts['from'],
-            'tl': self.opts['to'],
-            'hl': self.opts['to'],
-            'dt': ['at', 'bd', 'ex', 'ld', 'md', 'qca', 'rw', 'rm', 'ss', 't'],
-            'ie': 'UTF-8',
-            'oe': 'UTF-8',
-            'otf': 1,
-            'ssel': 0,
-            'tsel': 0,
-            'kc': 7,
-            'q': text
-        }
-        token = self.getToken(text)
-        data[token['name']] = token['value']
+            'rpcids': 'MkEWBc',
+            'f.sid': self.extract('FdrFJe', resp.text),
+            'bl': self.extract('cfb2h', resp.text),
+            'hl': 'en-US',
+            'soc-app': 1,
+            'soc-platform': 1,
+            'soc-device': 1,
+            '_reqid': 1000 + randrange(9000),
+            'rt': 'c'
+        };
 
-        resp = requests.get(url, params=data)
-        if resp.status_code != 200:
-            raise ValueError('GET request {} failed with error {}'.format(resp.request.url, resp.status_code))
-        result = ''.join([ x[0] for x in resp.json()[0] if x[0] ])
+        url = baseurl + '/_/TranslateWebserverUi/data/batchexecute?' + urllib.parse.urlencode(data)
+        headers = { 'content-type' : 'application/x-www-form-urlencoded;charset=UTF-8' }
+        payload = {
+                'f.req' : [[["MkEWBc",f'[["{text}","{self.from_language}","{self.to_language}",true],[null]]','null','generic']]]
+                }
+        data = urllib.parse.urlencode(payload)
+        resp = requests.post(url, data=data, headers=headers)
+
+        # Remove leading junk characters
+        content = resp.text[6:]
+        p = re.compile(r'\d+')
+        length = p.search(content).group()
+        content = content[len(length) : int(length) + len(length)]
+        xs = json.loads(content)
+        xs = json.loads(xs[0][2])
+
+        result = None
+
+        for translation in xs[1][0][0][5]:
+            if translation[0]:
+                result = translation[0]
+                break
+
+        if not result:
+            raise LookupError(f'translation for {text} not found in reponse')
         return result
 
-    def getDefaults(self):
-        return {
-            'client' : 't',
-            'from' : Language.FR,
-            'to' :   Language.EN
-        }
+    def extractSid(self, res):
+        pass
 
-    def getToken(self, text):
-        tokenscript = path.join(path.dirname(path.realpath(__file__)), 'get-api-token.js')
-        t = subprocess.check_output(['node', tokenscript, text])
-        return json.loads(t)
+    def extract(self, key, res):
+        regexp = f'"{key}":"(.*?)"'
+        p = re.compile(regexp)
+        m = p.search(res)
+        if not m or not m.group(1):
+            raise LookupError(f'key {key} not found in reponse')
+        return m.group(1)
 
 
 if __name__ == '__main__':
-    translator = Translator('en', 'fr')
-    print(translator.translate("how are you?"))
+    translator = Translator(Language.FR, Language.EN)
+    print(translator.translate("Piper, sois plus discrète."))
 
