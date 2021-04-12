@@ -12,7 +12,6 @@ class Translator:
         self.to_language = t
 
     def translate(self, text):
-        text = text.replace('\n', '')
         baseurl = 'https://translate.google.com'
         resp = requests.get(baseurl)
 
@@ -31,8 +30,9 @@ class Translator:
         url = baseurl + '/_/TranslateWebserverUi/data/batchexecute?' + urllib.parse.urlencode(data)
         headers = { 'content-type' : 'application/x-www-form-urlencoded;charset=UTF-8' }
         payload = {
-                'f.req' : [[["MkEWBc",f'[["{text}","{self.from_language}","{self.to_language}",true],[null]]','null','generic']]]
+                'f.req' : [[["MkEWBc",f'[["{self.escape(text)}","{self.from_language}","{self.to_language}",true],[null]]','null','generic']]]
                 }
+
         data = urllib.parse.urlencode(payload)
         resp = requests.post(url, data=data, headers=headers)
 
@@ -41,18 +41,17 @@ class Translator:
         p = re.compile(r'\d+')
         length = p.search(content).group()
         content = content[len(length) : int(length) + len(length)]
-        xs = json.loads(content)
-        xs = json.loads(xs[0][2])
+        try:
+            xs = json.loads(content)
+            xs = json.loads(xs[0][2])
+        except TypeError:
+            self.raiseTranslationError(text)
 
-        result = None
-
-        for translation in xs[1][0][0][5]:
-            if translation[0]:
-                result = translation[0]
-                break
+        result = ' '.join([ translation[0] for translation in xs[1][0][0][5] if translation[0] ])
 
         if not result:
-            raise LookupError(f'translation for {text} not found in reponse')
+            self.raiseTranslationError(text)
+
         return result
 
     def extractSid(self, res):
@@ -66,8 +65,14 @@ class Translator:
             raise LookupError(f'key {key} not found in reponse')
         return m.group(1)
 
+    def raiseTranslationError(self, text):
+        raise LookupError(f'translation for "{text}" not found in response')
+
+    def escape(self, text):
+        for r in (('\'', '\\\''), ('"', '\\"'), ('\n', '\\n'), ('\t', '\\t'), ('\r', '\\r')):
+            text = text.replace(*r)
+        return text
 
 if __name__ == '__main__':
     translator = Translator(Language.FR, Language.EN)
-    print(translator.translate("Piper, sois plus discrète."))
-
+    print(translator.translate("\nPiper, sois plus discrète \"merde!\". Oui! Oui! Oui!"))
