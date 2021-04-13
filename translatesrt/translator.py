@@ -54,15 +54,12 @@ class Translator:
 
         return result
 
-    def extractSid(self, res):
-        pass
-
     def extract(self, key, res):
         regexp = f'"{key}":"(.*?)"'
         p = re.compile(regexp)
         m = p.search(res)
-        if not m or not m.group(1):
-            raise LookupError(f'key {key} not found in reponse')
+        if not m:
+            raise LookupError(f'key {key} not found in response')
         return m.group(1)
 
     def raiseTranslationError(self, text):
