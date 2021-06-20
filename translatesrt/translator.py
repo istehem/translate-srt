@@ -3,7 +3,7 @@ import json
 import re
 import urllib
 from random import randrange
-from .language import Language
+from common.language import Language
 
 class Translator:
     def __init__(self, f = Language.FR, t = Language.EN):
