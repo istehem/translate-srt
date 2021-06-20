@@ -22,5 +22,5 @@ class StartEnd:
         return '-->'
 
     def add(self, diff : Time) -> None:
-        self.start = self.start.add(diff)
-        self.end   = self.end.add(diff)
+        self.start = self.start + diff
+        self.end   = self.end + diff
